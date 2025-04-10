@@ -1,4 +1,4 @@
-import { CheckCheck, Search, User } from "lucide-react";
+import { CheckCheck, Search, Send, User } from "lucide-react";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
 const chatData = [
@@ -74,6 +74,74 @@ const chatData = [
   },
 ];
 
+const messaheData = [
+  {
+    message: "Hello baba",
+    uid: 1,
+    time: "5m",
+  },
+  {
+    message: "Ow patiyo",
+    uid: 2,
+    time: "3m",
+  },
+  {
+    message: "Kohomada",
+    uid: 1,
+    time: "1m",
+  },
+  {
+    message: "Hello baba",
+    uid: 1,
+    time: "5m",
+  },
+  {
+    message: "Ow patiyo",
+    uid: 2,
+    time: "3m",
+  },
+  {
+    message: "Kohomada",
+    uid: 1,
+    time: "1m",
+  },
+  {
+    message: "Hello baba",
+    uid: 1,
+    time: "5m",
+  },
+  {
+    message: "Ow patiyo",
+    uid: 2,
+    time: "3m",
+  },
+  {
+    message: "Kohomada",
+    uid: 1,
+    time: "1m",
+  },
+  {
+    message: "Ow patiyo",
+    uid: 2,
+    time: "3m",
+  },
+  {
+    message: "Kohomada",
+    uid: 1,
+    time: "1m",
+  },
+  {
+    message: "Ow patiyo",
+    uid: 2,
+    time: "3m",
+  },
+  {
+    message: "Kohomada",
+    uid: 1,
+    time: "1m",
+  },
+];
+
 const Home = () => {
   return (
     <div className="home-container">
@@ -114,7 +182,87 @@ const Home = () => {
           })}
         </div>
       </div>
-      <div className="home-message-body"></div>
+      <div className="home-message-body">
+        <div
+          style={{
+            height: "10%",
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <label style={{ fontWeight: "bold" }}>Nadeesha Ruwandima</label>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            padding: "2%",
+            overflow: "scroll",
+            height: "76%",
+          }}
+        >
+          {messaheData.map((e) => {
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: e.uid === 1 ? "flex-end" : "flex-start",
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: e.uid === 1 ? "#e3adf9" : "#cfcfcf",
+                    width: "20%",
+                    borderBottomLeftRadius: "20px",
+                    borderBottomRightRadius: "20px",
+                    borderTopRightRadius: e.uid === 1 ? 0 : "20px",
+                    borderTopLeftRadius: e.uid === 1 ? "20px" : 0,
+                    padding: "1%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label style={{ fontSize: "12px" }}>{e.message}</label>
+                  <label
+                    style={{
+                      textAlign: "right",
+                      color: "gray",
+                      fontSize: "10px",
+                    }}
+                  >
+                    {e.time}
+                  </label>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "5px",
+            backgroundColor: "#e3adf9",
+            padding: "1%",
+            borderRadius: "10px",
+          }}
+        >
+          
+          <input
+            placeholder="Your message"
+            style={{
+              width: "100%",
+              borderStyle: "hidden",
+              backgroundColor: "transparent",
+            }}
+          />
+          <Send/>
+        </div>
+      </div>
     </div>
   );
 };
