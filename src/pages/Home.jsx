@@ -184,24 +184,12 @@ const Home = () => {
       </div>
       <div className="home-message-body">
         <div
-          style={{
-            height: "10%",
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
+         className="home-message-body-1"
         >
           <label style={{ fontWeight: "bold" }}>Nadeesha Ruwandima</label>
         </div>
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            padding: "2%",
-            overflow: "scroll",
-            height: "76%",
-          }}
+          className="home-message-card-1"
         >
           {messaheData.map((e) => {
             return (
