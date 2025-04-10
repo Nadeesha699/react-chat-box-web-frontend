@@ -1,4 +1,5 @@
 import { CheckCheck, Search, Send, User } from "lucide-react";
+import { useState } from "react";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
 const chatData = [
@@ -143,6 +144,7 @@ const messaheData = [
 ];
 
 const Home = () => {
+  const [searchText, setSearchText] = useState("");
   return (
     <div className="home-container">
       <div className="home-message-list">
@@ -155,45 +157,47 @@ const Home = () => {
               borderStyle: "hidden",
               backgroundColor: "transparent",
             }}
+            onChange={(e) => setSearchText(e.target.value)}
           />
         </div>
         <div className="scroll-container">
-          {chatData.map((e) => {
-            return (
-              <div className="message-card">
-                <User size={"40"} />
-                <div className="message-card-1">
-                  <div className="message-card-2">
-                    <label style={{ fontWeight: "bold" }}>{e.name}</label>
-                    <CheckCheck size={"20"} />
-                    <label style={{ color: "gray", fontSize: "10px" }}>
-                      {e.time}
-                    </label>
-                  </div>
-                  <div className="message-card-2">
-                    <label style={{ color: "gray", fontSize: "12px" }}>
-                      {e.message}
-                    </label>
-                    <label className="message-card-lbl">2</label>
+          {chatData
+            .filter((e) =>
+              e.name.toLowerCase().includes(searchText.toLowerCase())
+            )
+            .map((e, index) => {
+              return (
+                <div className="message-card" key={index}>
+                  <User size={"40"} />
+                  <div className="message-card-1">
+                    <div className="message-card-2">
+                      <label style={{ fontWeight: "bold" }}>{e.name}</label>
+                      <CheckCheck size={"20"} />
+                      <label style={{ color: "gray", fontSize: "10px" }}>
+                        {e.time}
+                      </label>
+                    </div>
+                    <div className="message-card-2">
+                      <label style={{ color: "gray", fontSize: "12px" }}>
+                        {e.message}
+                      </label>
+                      <label className="message-card-lbl">2</label>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
       <div className="home-message-body">
-        <div
-         className="home-message-body-1"
-        >
+        <div className="home-message-body-1">
           <label style={{ fontWeight: "bold" }}>Nadeesha Ruwandima</label>
         </div>
-        <div
-          className="home-message-card-1"
-        >
-          {messaheData.map((e) => {
+        <div className="home-message-card-1">
+          {messaheData.map((e, index) => {
             return (
               <div
+                key={index}
                 style={{
                   display: "flex",
                   justifyContent: e.uid === 1 ? "flex-end" : "flex-start",
@@ -239,7 +243,6 @@ const Home = () => {
             borderRadius: "10px",
           }}
         >
-          
           <input
             placeholder="Your message"
             style={{
@@ -248,7 +251,7 @@ const Home = () => {
               backgroundColor: "transparent",
             }}
           />
-          <Send/>
+          <Send />
         </div>
       </div>
     </div>
