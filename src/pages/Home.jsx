@@ -156,6 +156,7 @@ const Home = () => {
               width: "100%",
               borderStyle: "hidden",
               backgroundColor: "transparent",
+              outline: "none"
             }}
             onChange={(e) => setSearchText(e.target.value)}
           />
@@ -249,6 +250,7 @@ const Home = () => {
               width: "100%",
               borderStyle: "hidden",
               backgroundColor: "transparent",
+              outline: "none"
             }}
           />
           <Send />
