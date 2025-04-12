@@ -9,9 +9,9 @@ import {
 } from "lucide-react";
 import Logo from "../images/message.png";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Intro = () => {
-
   const [visibleButton1, setVisibleButton1] = useState(false);
   const [visibleRegScreen1, setVisibleRegScreen1] = useState(true);
   const [visibleRegScreen2, setVisibleRegScreen2] = useState(false);
@@ -131,7 +131,9 @@ const Intro = () => {
             />
             <Eye />
           </div>
-          <button className="intro-button">Login</button>
+          <Link to="/home">
+            <button className="intro-button">Login</button>
+          </Link>
         </div>
       </div>
     </div>

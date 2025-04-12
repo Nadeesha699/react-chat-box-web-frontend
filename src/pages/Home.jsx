@@ -1,4 +1,4 @@
-import { CheckCheck, Search, Send, User } from "lucide-react";
+import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
 import { useState } from "react";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
@@ -148,18 +148,28 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-message-list">
-        <div className="home-message-list-1">
-          <Search />
-          <input
-            placeholder="search"
-            style={{
-              width: "100%",
-              borderStyle: "hidden",
-              backgroundColor: "transparent",
-              outline: "none"
-            }}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div className="home-message-list-2">
+            <Search />
+            <input
+              placeholder="search"
+              style={{
+                width: "100%",
+                borderStyle: "hidden",
+                backgroundColor: "transparent",
+                outline: "none",
+              }}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+          <Edit onClick={()=>{alert("test")}} style={{cursor:"pointer"}}/>
         </div>
         <div className="scroll-container">
           {chatData
@@ -250,7 +260,7 @@ const Home = () => {
               width: "100%",
               borderStyle: "hidden",
               backgroundColor: "transparent",
-              outline: "none"
+              outline: "none",
             }}
           />
           <Send />
