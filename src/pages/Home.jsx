@@ -1,5 +1,6 @@
-import { CheckCheck, Edit, Search, Send, User, User2 } from "lucide-react";
-import { useState } from "react";
+import { CheckCheck, Edit, Search, Send, User, } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
 const chatData = [
@@ -160,6 +161,23 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [searchText1, setSearchText1] = useState("");
   const [visibleUserList, setVisibleUserList] = useState(false);
+
+  const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 575.98);
+      };
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    
+
+    return isMobile;
+  };
+  const isMobileDisabled = useIsMobile();
   return (
     <div className="home-container">
       <div className="home-message-list">
@@ -200,24 +218,29 @@ const Home = () => {
             )
             .map((e, index) => {
               return (
-                <div className="message-card" key={index}>
-                  <User size={"40"} />
-                  <div className="message-card-1">
-                    <div className="message-card-2">
-                      <label style={{ fontWeight: "bold" }}>{e.name}</label>
-                      <CheckCheck size={"20"} />
-                      <label style={{ color: "gray", fontSize: "10px" }}>
-                        {e.time}
-                      </label>
-                    </div>
-                    <div className="message-card-2">
-                      <label style={{ color: "gray", fontSize: "12px" }}>
-                        {e.message}
-                      </label>
-                      <label className="message-card-lbl">2</label>
+                <Link
+                  to= {isMobileDisabled  ? "/chat-body":"#"}
+                  key={index}
+                >
+                  <div className="message-card" key={index}>
+                    <User size={"40"} />
+                    <div className="message-card-1">
+                      <div className="message-card-2">
+                        <label style={{ fontWeight: "bold" }}>{e.name}</label>
+                        <CheckCheck size={"20"} />
+                        <label style={{ color: "gray", fontSize: "10px" }}>
+                          {e.time}
+                        </label>
+                      </div>
+                      <div className="message-card-2">
+                        <label style={{ color: "gray", fontSize: "12px" }}>
+                          {e.message}
+                        </label>
+                        <label className="message-card-lbl">2</label>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
         </div>

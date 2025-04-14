@@ -1,4 +1,5 @@
 import './App.css';
+import ChatBody from './pages/ChatBody';
 import Home from './pages/Home';
 import Intro from './pages/Intro';
 import {  Routes, Route, BrowserRouter } from "react-router-dom";
@@ -9,6 +10,7 @@ function App() {
     <Routes>
       <Route element={<Intro/>} path='/'/>
       <Route element={<Home/>}  path='/home'/>
+      <Route element={<ChatBody/>} path='/chat-body'/>
     </Routes>
     </BrowserRouter>
   );
