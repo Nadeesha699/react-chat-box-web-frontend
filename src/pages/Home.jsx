@@ -158,6 +158,7 @@ const user = [
 
 const Home = () => {
   const [searchText, setSearchText] = useState("");
+  const [searchText1, setSearchText1] = useState("");
   const [visibleUserList, setVisibleUserList] = useState(false);
   return (
     <div className="home-container">
@@ -313,7 +314,9 @@ const Home = () => {
               backgroundColor: "transparent",
               outline: "none",
             }}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={(e) => {
+              setSearchText1(e.target.value);
+            }}
           />
         </div>
         <div
@@ -324,22 +327,26 @@ const Home = () => {
             overflow: "scroll",
           }}
         >
-          {user.map((e, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <User />
-                <label>{e.name}</label>
-              </div>
-            );
-          })}
+          {user
+            .filter((e) =>
+              e.name.toLowerCase().includes(searchText1.toLowerCase())
+            )
+            .map((e, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <User />
+                  <label>{e.name}</label>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>

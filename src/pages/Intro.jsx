@@ -6,6 +6,7 @@ import {
   User2Icon,
   ArrowRightIcon,
   ArrowLeftIcon,
+  EyeClosed,
 } from "lucide-react";
 import Logo from "../images/message.png";
 import { useState } from "react";
@@ -19,6 +20,10 @@ const Intro = () => {
   const [visibleButton2, setVisibleButton2] = useState(false);
   const [visibleLogScreen1, setVisibleLogScreen1] = useState(true);
   const [visibleLogScreen2, setVisibleLogScreen2] = useState(false);
+
+  const [eye1, setEye1] = useState(false);
+  const [eye2, setEye2] = useState(false);
+  const [eye3, setEye3] = useState(false);
 
   return (
     <div className="intro-container">
@@ -53,6 +58,7 @@ const Intro = () => {
         <div
           className="intro-div-1"
           style={{ display: visibleRegScreen2 ? "flex" : "none" }}
+          // style={{ display: "flex" }}
         >
           <img src={Logo} alt="img" className="intro-logo" />
           <div className="home-message-list-1">
@@ -69,19 +75,33 @@ const Intro = () => {
             <Lock />
             <input
               placeholder="New password"
-              type="password"
+              type={eye1 ? "text" : "password"}
               className="input-chat"
             />
-            <Eye />
+            <div
+              onClick={() => {
+                eye1 ? setEye1(false) : setEye1(true);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              {eye1 ? <Eye /> : <EyeClosed />}
+            </div>
           </div>
           <div className="home-message-list-1">
             <Lock />
             <input
               placeholder="Confirm password"
-              type="password"
+              type={eye2 ? "text" : "password"}
               className="input-chat"
             />
-            <Eye />
+            <div
+              onClick={() => {
+                eye2 ? setEye2(false) : setEye2(true);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              {eye2 ? <Eye /> : <EyeClosed />}
+            </div>
           </div>
           <button className="intro-button">Sign up</button>
         </div>
@@ -115,6 +135,7 @@ const Intro = () => {
         <div
           className="intro-div-1"
           style={{ display: visibleLogScreen2 ? "none" : "flex" }}
+          // style={{ display: "flex" }}
         >
           <img src={Logo} className="intro-logo" alt="img" />
           <div className="home-message-list-1">
@@ -126,14 +147,24 @@ const Intro = () => {
             <Lock />
             <input
               placeholder="Password"
-              type="password"
+              type={eye3 ? "text" : "password"}
               className="input-chat"
             />
-            <Eye />
+            <div
+              onClick={() => {
+                eye3 ? setEye3(false) : setEye3(true);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              {eye3 ? <Eye /> : <EyeClosed />}
+            </div>
           </div>
-          <Link to="/home">
-            <button className="intro-button">Login</button>
-          </Link>
+
+          <button className="intro-button">
+            <Link to="/home" style={{ color: "white", textDecoration: "none" }}>
+              Login
+            </Link>
+          </button>
         </div>
       </div>
     </div>
