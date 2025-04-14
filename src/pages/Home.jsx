@@ -219,6 +219,7 @@ const Home = () => {
             .map((e, index) => {
               return (
                 <Link
+                className="link-message-body"
                   to= {isMobileDisabled  ? "/chat-body":"#"}
                   key={index}
                 >
