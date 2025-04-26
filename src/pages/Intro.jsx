@@ -30,7 +30,7 @@ const Intro = () => {
       <div className="intro-card">
         <div
           className="intro-div-2"
-          style={{ display: visibleRegScreen1 ? "flex" : "none" }}
+          style={{ display: visibleRegScreen1 ? "flex" : "none"}}
           onMouseEnter={() => {
             setVisibleButton1(true);
           }}
