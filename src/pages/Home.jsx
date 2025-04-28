@@ -1,80 +1,81 @@
-import { CheckCheck, Edit, Search, Send, User, } from "lucide-react";
+import axios from "axios";
+import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
-const chatData = [
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "2m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "5m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "5m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "5m",
-    message: "Hello baba",
-  },
-  {
-    name: "Nadeesha Ruwndima",
-    time: "5m",
-    message: "Hello baba",
-  },
-];
+// const chatData = [
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "2m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "5m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "5m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "5m",
+//     message: "Hello baba",
+//   },
+//   {
+//     name: "Nadeesha Ruwndima",
+//     time: "5m",
+//     message: "Hello baba",
+//   },
+// ];
 
 const messaheData = [
   {
@@ -161,6 +162,142 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [searchText1, setSearchText1] = useState("");
   const [visibleUserList, setVisibleUserList] = useState(false);
+  const [conversationData, setConversationData] = useState([
+    {
+      id: 0,
+      createrId: 0,
+      senderId: 0,
+      createAt: "",
+      updateAt: "",
+      createruser: {
+        id: 0,
+        username: "",
+        email: "",
+        password: "",
+        createAt: "",
+        updateAt: "",
+      },
+      senderuser: {
+        id: 0,
+        username: "",
+        email: "",
+        password: "",
+        createAt: "",
+        updateAt: "",
+      },
+    },
+  ]);
+
+  // const [messageData, setMessageData] = useState(
+  //   {
+  //     id: 0,
+  //     message: "",
+  //     conversationId: 0,
+  //     userid: 0,
+  //     createAt: "",
+  //     updateAt: "",
+  //     user: {
+  //       id: 0,
+  //       username: "",
+  //       email: "",
+  //       password: "",
+  //       createAt: "",
+  //       updateAt: "",
+  //     },
+  //   },
+  // );
+
+  useEffect(() => {
+    const loadData = () => {
+      axios
+        .get("http://localhost:4000/api/conversation/get-all/by-user-id?id=9")
+        .then((e) => {
+          setConversationData(e.data.data);
+        });
+    };
+    loadData();
+  }, []);
+
+  function timeAgo(date) {
+    const now = new Date();
+    const diff = now - new Date(date); 
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30); 
+    const years = Math.floor(months / 12);
+
+    if (years > 0) {
+      return `${years}y`;
+    } else if (months > 0) {
+      return `${months}mo`;
+    } else if (days > 0) {
+      return `${days}d`;
+    } else if (hours > 0) {
+      return `${hours}h`;
+    } else if (minutes > 0) {
+      return `${minutes}m`;
+    } else if (seconds > 0) {
+      return `${seconds}s`;
+    } else {
+      return "Just now";
+    }
+  }
+
+  const [messages, setMessages] = useState({});
+  const [times, setTimes] = useState({});
+
+  const latestMessage = async (a) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
+      );
+      const data = response.data.data;
+      return data ? data[0].message : "No message found";
+    } catch (error) {
+      // console.error("Error fetching message data:", error);
+      // return "Error fetching message data";
+    }
+  };
+
+  const latestTime = async (a) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
+      );
+      const data = response.data.data;
+      return data ? data[0].createAt : "N/A";
+    } catch (error) {
+      // console.error("Error fetching message data:", error);
+      // return "Error fetching message data";
+    }
+  };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const newMessages = {};
+      for (let e of conversationData) {
+        const message = await latestMessage(e.id);
+        newMessages[e.id] = message;
+      }
+      setMessages(newMessages);
+    };
+
+    fetchMessages();
+
+    const fetchTimes = async () => {
+      const newTimes = {};
+      for (let e of conversationData) {
+        const times = await latestTime(e.id);
+        newTimes[e.id] = times;
+      }
+      setTimes(newTimes);
+    };
+
+    fetchTimes();
+  }, [conversationData]);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -172,8 +309,6 @@ const Home = () => {
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }, []);
-
-    
 
     return isMobile;
   };
@@ -212,30 +347,34 @@ const Home = () => {
           />
         </div>
         <div className="scroll-container">
-          {chatData
+          {conversationData
             .filter((e) =>
-              e.name.toLowerCase().includes(searchText.toLowerCase())
+              e.createruser.username
+                .toLowerCase()
+                .includes(searchText.toLowerCase())
             )
             .map((e, index) => {
               return (
                 <Link
-                className="link-message-body"
-                  to= {isMobileDisabled  ? "/chat-body":"#"}
+                  className="link-message-body"
+                  to={isMobileDisabled ? "/chat-body" : "#"}
                   key={index}
                 >
                   <div className="message-card" key={index}>
                     <User size={"40"} />
                     <div className="message-card-1">
                       <div className="message-card-2">
-                        <label style={{ fontWeight: "bold" }}>{e.name}</label>
+                        <label style={{ fontWeight: "bold" }}>
+                          {e.createruser.username}
+                        </label>
                         <CheckCheck size={"20"} />
                         <label style={{ color: "gray", fontSize: "10px" }}>
-                          {e.time}
+                          {timeAgo(times[e.id])}
                         </label>
                       </div>
                       <div className="message-card-2">
                         <label style={{ color: "gray", fontSize: "12px" }}>
-                          {e.message}
+                          {messages[e.id]}
                         </label>
                         <label className="message-card-lbl">2</label>
                       </div>
