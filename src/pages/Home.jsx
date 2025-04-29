@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { FaMessage } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
@@ -271,7 +271,7 @@ const Home = () => {
         `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
       );
       const data = response.data.data;
-      return data ? data[0].message : "No message found";
+      return data ? data[data.length - 1]?.message : "No message found";
     } catch (error) {
       // console.error("Error fetching message data:", error);
       // return "Error fetching message data";
@@ -284,11 +284,43 @@ const Home = () => {
         `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
       );
       const data = response.data.data;
-      return data ? data[0].createAt : "N/A";
+      return data ? data[data.length - 1]?.createAt : "N/A";
     } catch (error) {
       // console.error("Error fetching message data:", error);
       // return "Error fetching message data";
     }
+  };
+
+  const sendMessage = () => {
+    const newMessage = {
+      message: messageText,
+      conversationId: 2,
+      userid: 7,
+      creatAt: new Date().toISOString(),
+    };
+
+    setChatData([...chatData, newMessage]);
+
+    setMessages((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: newMessage.message,
+    }));
+
+    setTimes((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: newMessage.creatAt,
+    }));
+
+    axios
+      .post(`http://localhost:4000/api/message/set`, {
+        message: messageText,
+        conversationId: 2,
+        userid: 7,
+      })
+      .then((e) => {
+        setMessageText("");
+        e.data.data ? alert("message send") : alert("message unsend");
+      });
   };
 
   useEffect(() => {
@@ -329,6 +361,16 @@ const Home = () => {
     return isMobile;
   };
   const isMobileDisabled = useIsMobile();
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatData]);
   return (
     <div className="home-container">
       <div className="home-message-list">
@@ -471,6 +513,7 @@ const Home = () => {
                 </div>
               );
             })}
+            <div ref={messagesEndRef} />
           </div>
           <div
             style={{
@@ -496,31 +539,13 @@ const Home = () => {
                 backgroundColor: "transparent",
                 outline: "none",
               }}
-            />
-            <Send
-              onClick={() => {
-                // const preMessage=
-                setChatData([
-                  ...chatData,
-                  {
-                    message: messageText,
-                    conversationId: 2,
-                    userid: 7,
-                  },
-                ]);
-                axios
-                  .post(`http://localhost:4000/api/message/set`, {
-                    message: messageText,
-                    conversationId: 2,
-                    userid: 7,
-                  })
-                  .then((e) => {
-                    e.data.data
-                      ? alert("message send")
-                      : alert("message unsend");
-                  });
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  sendMessage();
+                }
               }}
             />
+            <Send onClick={sendMessage} />
           </div>
         </div>
       )}
