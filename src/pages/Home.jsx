@@ -1,6 +1,7 @@
 import axios from "axios";
 import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { FaMessage } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
@@ -77,86 +78,86 @@ import { Link } from "react-router-dom";
 //   },
 // ];
 
-const messaheData = [
-  {
-    message: "Hello baba",
-    uid: 1,
-    time: "5m",
-  },
-  {
-    message: "Ow patiyo",
-    uid: 2,
-    time: "3m",
-  },
-  {
-    message: "Kohomada",
-    uid: 1,
-    time: "1m",
-  },
-  {
-    message: "Hello baba",
-    uid: 1,
-    time: "5m",
-  },
-  {
-    message: "Ow patiyo",
-    uid: 2,
-    time: "3m",
-  },
-  {
-    message: "Kohomada",
-    uid: 1,
-    time: "1m",
-  },
-  {
-    message: "Hello baba",
-    uid: 1,
-    time: "5m",
-  },
-  {
-    message: "Ow patiyo",
-    uid: 2,
-    time: "3m",
-  },
-  {
-    message: "Kohomada",
-    uid: 1,
-    time: "1m",
-  },
-  {
-    message: "Ow patiyo",
-    uid: 2,
-    time: "3m",
-  },
-  {
-    message: "Kohomada",
-    uid: 1,
-    time: "1m",
-  },
-  {
-    message: "Ow patiyo",
-    uid: 2,
-    time: "3m",
-  },
-  {
-    message: "Kohomada",
-    uid: 1,
-    time: "1m",
-  },
-];
+// const messaheData = [
+//   {
+//     message: "Hello baba",
+//     uid: 1,
+//     time: "5m",
+//   },
+//   {
+//     message: "Ow patiyo",
+//     uid: 2,
+//     time: "3m",
+//   },
+//   {
+//     message: "Kohomada",
+//     uid: 1,
+//     time: "1m",
+//   },
+//   {
+//     message: "Hello baba",
+//     uid: 1,
+//     time: "5m",
+//   },
+//   {
+//     message: "Ow patiyo",
+//     uid: 2,
+//     time: "3m",
+//   },
+//   {
+//     message: "Kohomada",
+//     uid: 1,
+//     time: "1m",
+//   },
+//   {
+//     message: "Hello baba",
+//     uid: 1,
+//     time: "5m",
+//   },
+//   {
+//     message: "Ow patiyo",
+//     uid: 2,
+//     time: "3m",
+//   },
+//   {
+//     message: "Kohomada",
+//     uid: 1,
+//     time: "1m",
+//   },
+//   {
+//     message: "Ow patiyo",
+//     uid: 2,
+//     time: "3m",
+//   },
+//   {
+//     message: "Kohomada",
+//     uid: 1,
+//     time: "1m",
+//   },
+//   {
+//     message: "Ow patiyo",
+//     uid: 2,
+//     time: "3m",
+//   },
+//   {
+//     message: "Kohomada",
+//     uid: 1,
+//     time: "1m",
+//   },
+// ];
 
-const user = [
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-  { name: "Nadeesha" },
-];
+// const user = [
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+//   { name: "Nadeesha" },
+// ];
 
 const Home = () => {
   const [searchText, setSearchText] = useState("");
@@ -187,25 +188,36 @@ const Home = () => {
       },
     },
   ]);
-
-  // const [messageData, setMessageData] = useState(
-  //   {
-  //     id: 0,
-  //     message: "",
-  //     conversationId: 0,
-  //     userid: 0,
-  //     createAt: "",
-  //     updateAt: "",
-  //     user: {
-  //       id: 0,
-  //       username: "",
-  //       email: "",
-  //       password: "",
-  //       createAt: "",
-  //       updateAt: "",
-  //     },
-  //   },
-  // );
+  const [chatData, setChatData] = useState([
+    {
+      id: 0,
+      message: "",
+      conversationId: 0,
+      userid: 0,
+      createAt: "",
+      updateAt: "",
+      user: {
+        id: 0,
+        username: "",
+        email: "",
+        password: "",
+        createAt: "",
+        updateAt: "",
+      },
+    },
+  ]);
+  const [users, setUsers] = useState([
+    {
+      id: 0,
+      username: "",
+      email: "",
+      password: "",
+      createAt: "",
+      updateAt: "",
+    },
+  ]);
+  const [showChatSpace, setShowChatSpace] = useState(true);
+  const [messageText, setMessageText] = useState("");
 
   useEffect(() => {
     const loadData = () => {
@@ -214,19 +226,23 @@ const Home = () => {
         .then((e) => {
           setConversationData(e.data.data);
         });
+
+      axios.get("http://localhost:4000/api/users/get-all").then((e) => {
+        setUsers(e.data.data);
+      });
     };
     loadData();
   }, []);
 
   function timeAgo(date) {
     const now = new Date();
-    const diff = now - new Date(date); 
+    const diff = now - new Date(date);
 
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    const months = Math.floor(days / 30); 
+    const months = Math.floor(days / 30);
     const years = Math.floor(months / 12);
 
     if (years > 0) {
@@ -359,6 +375,18 @@ const Home = () => {
                   className="link-message-body"
                   to={isMobileDisabled ? "/chat-body" : "#"}
                   key={index}
+                  onClick={() => {
+                    axios
+                      .get(
+                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
+                      )
+                      .then((e) => {
+                        setChatData(e.data.data);
+                        chatData
+                          ? setShowChatSpace(false)
+                          : setShowChatSpace(true);
+                      });
+                  }}
                 >
                   <div className="message-card" key={index}>
                     <User size={"40"} />
@@ -385,72 +413,117 @@ const Home = () => {
             })}
         </div>
       </div>
-      <div className="home-message-body">
-        <div className="home-message-body-1">
-          <label style={{ fontWeight: "bold" }}>Nadeesha Ruwandima</label>
-        </div>
-        <div className="home-message-card-1">
-          {messaheData.map((e, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  justifyContent: e.uid === 1 ? "flex-end" : "flex-start",
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: e.uid === 1 ? "#e3adf9" : "#cfcfcf",
-                    width: "20%",
-                    borderBottomLeftRadius: "20px",
-                    borderBottomRightRadius: "20px",
-                    borderTopRightRadius: e.uid === 1 ? 0 : "20px",
-                    borderTopLeftRadius: e.uid === 1 ? "20px" : 0,
-                    padding: "1%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <label style={{ fontSize: "12px" }}>{e.message}</label>
-                  <label
-                    style={{
-                      textAlign: "right",
-                      color: "gray",
-                      fontSize: "10px",
-                    }}
-                  >
-                    {e.time}
-                  </label>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {showChatSpace ? (
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
-            gap: "5px",
-            backgroundColor: "#e3adf9",
-            padding: "1%",
-            borderRadius: "10px",
+            width: "100%",
+            height: "100vh",
           }}
         >
-          <input
-            placeholder="Your message"
-            style={{
-              width: "100%",
-              borderStyle: "hidden",
-              backgroundColor: "transparent",
-              outline: "none",
-            }}
-          />
-          <Send />
+          <FaMessage size={100} color="#e3adf9" />
+          <label>Welcome to Chatterbox</label>
+          <p>Start a conversation by adding new friends!</p>
+          <p>Your chats will appear here once you start messaging.</p>
         </div>
-      </div>
+      ) : (
+        <div className="home-message-body">
+          <div className="home-message-body-1">
+            <label style={{ fontWeight: "bold" }}>Nadeesha Ruwandima</label>
+          </div>
+          <div className="home-message-card-1">
+            {chatData.map((e, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: e.userid === 7 ? "flex-end" : "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: e.userid === 7 ? "#e3adf9" : "#cfcfcf",
+                      width: "20%",
+                      borderBottomLeftRadius: "20px",
+                      borderBottomRightRadius: "20px",
+                      borderTopRightRadius: e.userid === 7 ? 0 : "20px",
+                      borderTopLeftRadius: e.userid === 7 ? "20px" : 0,
+                      padding: "1%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <label style={{ fontSize: "12px" }}>{e.message}</label>
+                    <label
+                      style={{
+                        textAlign: "right",
+                        color: "gray",
+                        fontSize: "10px",
+                      }}
+                    >
+                      {timeAgo(e.createAt)}
+                    </label>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "#e3adf9",
+              padding: "1%",
+              borderRadius: "10px",
+            }}
+          >
+            <input
+              value={messageText}
+              onChange={(e) => {
+                setMessageText(e.target.value);
+              }}
+              placeholder="Your message"
+              style={{
+                width: "100%",
+                borderStyle: "hidden",
+                backgroundColor: "transparent",
+                outline: "none",
+              }}
+            />
+            <Send
+              onClick={() => {
+                // const preMessage=
+                setChatData([
+                  ...chatData,
+                  {
+                    message: messageText,
+                    conversationId: 2,
+                    userid: 7,
+                  },
+                ]);
+                axios
+                  .post(`http://localhost:4000/api/message/set`, {
+                    message: messageText,
+                    conversationId: 2,
+                    userid: 7,
+                  })
+                  .then((e) => {
+                    e.data.data
+                      ? alert("message send")
+                      : alert("message unsend");
+                  });
+              }}
+            />
+          </div>
+        </div>
+      )}
       <div
         style={{
           transition: "ease-in-out all 1s",
@@ -490,9 +563,9 @@ const Home = () => {
             overflow: "scroll",
           }}
         >
-          {user
+          {users
             .filter((e) =>
-              e.name.toLowerCase().includes(searchText1.toLowerCase())
+              e.username.toLowerCase().includes(searchText1.toLowerCase())
             )
             .map((e, index) => {
               return (
@@ -506,7 +579,7 @@ const Home = () => {
                   }}
                 >
                   <User />
-                  <label>{e.name}</label>
+                  <label>{e.username}</label>
                 </div>
               );
             })}
