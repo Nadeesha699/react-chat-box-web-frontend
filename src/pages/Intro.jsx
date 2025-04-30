@@ -11,6 +11,7 @@ import {
 import Logo from "../images/message.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Intro = () => {
   const [visibleButton1, setVisibleButton1] = useState(false);
@@ -25,12 +26,21 @@ const Intro = () => {
   const [eye2, setEye2] = useState(false);
   const [eye3, setEye3] = useState(false);
 
+  const [loginTxt, setLoginTxt] = useState({ username: "", password: "" });
+  const [regTxt, setRegTxt] = useState({
+    username: "",
+    email: "",
+    npassword: "",
+    cpassword: "",
+  });
+  const [links, setLink] = useState(false);
+
   return (
     <div className="intro-container">
       <div className="intro-card">
         <div
           className="intro-div-2"
-          style={{ display: visibleRegScreen1 ? "flex" : "none"}}
+          style={{ display: visibleRegScreen1 ? "flex" : "none" }}
           onMouseEnter={() => {
             setVisibleButton1(true);
           }}
@@ -63,12 +73,26 @@ const Intro = () => {
           <img src={Logo} alt="img" className="intro-logo" />
           <div className="home-message-list-1">
             <Mail />
-            <input placeholder="Email" className="input-chat" />
+            <input
+              placeholder="Email"
+              className="input-chat"
+              value={regTxt.email}
+              onChange={(e) => {
+                setRegTxt((prev) => ({ ...prev, email: e.target.value }));
+              }}
+            />
             <HelpCircle />
           </div>
           <div className="home-message-list-1">
             <User2Icon />
-            <input placeholder="User name" className="input-chat" />
+            <input
+              placeholder="User name"
+              className="input-chat"
+              value={regTxt.username}
+              onChange={(e) => {
+                setRegTxt((prev) => ({ ...prev, username: e.target.value }));
+              }}
+            />
             <HelpCircle />
           </div>
           <div className="home-message-list-1">
@@ -77,6 +101,10 @@ const Intro = () => {
               placeholder="New password"
               type={eye1 ? "text" : "password"}
               className="input-chat"
+              value={regTxt.npassword}
+              onChange={(e) => {
+                setRegTxt((prev) => ({ ...prev, npassword: e.target.value }));
+              }}
             />
             <div
               onClick={() => {
@@ -93,6 +121,10 @@ const Intro = () => {
               placeholder="Confirm password"
               type={eye2 ? "text" : "password"}
               className="input-chat"
+              value={regTxt.cpassword}
+              onChange={(e) => {
+                setRegTxt((prev) => ({ ...prev, cpassword: e.target.value }));
+              }}
             />
             <div
               onClick={() => {
@@ -103,7 +135,32 @@ const Intro = () => {
               {eye2 ? <Eye /> : <EyeClosed />}
             </div>
           </div>
-          <button className="intro-button">Sign up</button>
+          <button
+            className="intro-button"
+            onClick={() => {
+              if (
+                regTxt.username.length !== 0 &&
+                regTxt.email.length !== 0 &&
+                regTxt.npassword.length !== 0 &&
+                regTxt.cpassword.length !== 0 &&
+                regTxt.cpassword === regTxt.npassword
+              ) {
+                axios
+                  .post("http://localhost:4000/api/users/set", {
+                    username: regTxt.username,
+                    email: regTxt.email,
+                    password: regTxt.cpassword,
+                  })
+                  .then((e) => {
+                    e.data.data
+                      ? alert("Register success")
+                      : alert("Regsiter unsuccess");
+                  });
+              }
+            }}
+          >
+            Sign up
+          </button>
         </div>
         <div
           className="intro-div-2"
@@ -140,7 +197,14 @@ const Intro = () => {
           <img src={Logo} className="intro-logo" alt="img" />
           <div className="home-message-list-1">
             <User2Icon />
-            <input placeholder="User name" className="input-chat" />
+            <input
+              placeholder="User name"
+              className="input-chat"
+              value={loginTxt.username}
+              onChange={(e) => {
+                setLoginTxt((prev) => ({ ...prev, username: e.target.value }));
+              }}
+            />
             <HelpCircle />
           </div>
           <div className="home-message-list-1">
@@ -149,6 +213,10 @@ const Intro = () => {
               placeholder="Password"
               type={eye3 ? "text" : "password"}
               className="input-chat"
+              value={loginTxt.password}
+              onChange={(e) => {
+                setLoginTxt((prev) => ({ ...prev, password: e.target.value }));
+              }}
             />
             <div
               onClick={() => {
@@ -160,8 +228,29 @@ const Intro = () => {
             </div>
           </div>
 
-          <button className="intro-button">
-            <Link to="/home" style={{ color: "white", textDecoration: "none" }}>
+          <button
+            className="intro-button"
+            onClick={() => {
+              try {
+                if (loginTxt.username.length !== 0 && loginTxt.password.length !== 0) {
+                  axios
+                    .get(
+                      `http://localhost:4000/api/users/login?username=${loginTxt.username}&password=${loginTxt.password}`
+                    )
+                    .then((e) => {
+                      e.data.success ? setLink(true) : setLink(false);
+                    });
+                }
+              } catch (error) {
+                
+              }
+              
+            }}
+          >
+            <Link
+              to={links ? "/home" : "/"}
+              style={{ color: "white", textDecoration: "none" }}
+            >
               Login
             </Link>
           </button>
