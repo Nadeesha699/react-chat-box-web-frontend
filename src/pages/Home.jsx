@@ -1,163 +1,9 @@
 import axios from "axios";
 import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaMessage } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
-
-// const chatData = [
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "2m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "5m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "5m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "5m",
-//     message: "Hello baba",
-//   },
-//   {
-//     name: "Nadeesha Ruwndima",
-//     time: "5m",
-//     message: "Hello baba",
-//   },
-// ];
-
-// const messaheData = [
-//   {
-//     message: "Hello baba",
-//     uid: 1,
-//     time: "5m",
-//   },
-//   {
-//     message: "Ow patiyo",
-//     uid: 2,
-//     time: "3m",
-//   },
-//   {
-//     message: "Kohomada",
-//     uid: 1,
-//     time: "1m",
-//   },
-//   {
-//     message: "Hello baba",
-//     uid: 1,
-//     time: "5m",
-//   },
-//   {
-//     message: "Ow patiyo",
-//     uid: 2,
-//     time: "3m",
-//   },
-//   {
-//     message: "Kohomada",
-//     uid: 1,
-//     time: "1m",
-//   },
-//   {
-//     message: "Hello baba",
-//     uid: 1,
-//     time: "5m",
-//   },
-//   {
-//     message: "Ow patiyo",
-//     uid: 2,
-//     time: "3m",
-//   },
-//   {
-//     message: "Kohomada",
-//     uid: 1,
-//     time: "1m",
-//   },
-//   {
-//     message: "Ow patiyo",
-//     uid: 2,
-//     time: "3m",
-//   },
-//   {
-//     message: "Kohomada",
-//     uid: 1,
-//     time: "1m",
-//   },
-//   {
-//     message: "Ow patiyo",
-//     uid: 2,
-//     time: "3m",
-//   },
-//   {
-//     message: "Kohomada",
-//     uid: 1,
-//     time: "1m",
-//   },
-// ];
-
-// const user = [
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-//   { name: "Nadeesha" },
-// ];
 
 const Home = () => {
   const [searchText, setSearchText] = useState("");
@@ -264,6 +110,8 @@ const Home = () => {
 
   const [messages, setMessages] = useState({});
   const [times, setTimes] = useState({});
+  const [reads, setReads] = useState({});
+  const [counts, setCounts] = useState({});
 
   const latestMessage = async (a) => {
     try {
@@ -291,6 +139,32 @@ const Home = () => {
     }
   };
 
+  const latestRead = async (a) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
+      );
+      const data = response.data.data;
+      return data ? data[data.length - 1]?.read : false;
+    } catch (error) {
+      // console.error("Error fetching message data:", error);
+      // return "Error fetching message data";
+    }
+  };
+
+  const unreadCount = async (a) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/message/get-all/unread-messages/by-conversation-id?id=${a}`
+      );
+      const data = response.data.data;
+      return data ? data : 0;
+    } catch (error) {
+      // console.error("Error fetching message data:", error);
+      // return "Error fetching message data";
+    }
+  };
+
   const sendMessage = () => {
     const newMessage = {
       message: messageText,
@@ -298,6 +172,19 @@ const Home = () => {
       userid: 7,
       creatAt: new Date().toISOString(),
     };
+
+    axios.put(
+      `http://localhost:4000/api/message/update/by-conversation-id?id=2`
+    );
+    setCounts((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: 0,
+    }));
+
+    setReads((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: true,
+    }));
 
     setChatData([...chatData, newMessage]);
 
@@ -345,6 +232,28 @@ const Home = () => {
     };
 
     fetchTimes();
+
+    const fetchReads = async () => {
+      const newReads = {};
+      for (let e of conversationData) {
+        const reads = await latestRead(e.id);
+        newReads[e.id] = reads;
+      }
+      setReads(newReads);
+    };
+
+    fetchReads();
+
+    const fetchCounts = async () => {
+      const newCounts = {};
+      for (let e of conversationData) {
+        const counts = await unreadCount(e.id);
+        newCounts[e.id] = counts;
+      }
+      setCounts(newCounts);
+    };
+
+    fetchCounts();
   }, [conversationData]);
 
   const useIsMobile = () => {
@@ -371,6 +280,7 @@ const Home = () => {
   useEffect(() => {
     scrollToBottom();
   }, [chatData]);
+
   return (
     <div className="home-container">
       <div className="home-message-list">
@@ -418,6 +328,18 @@ const Home = () => {
                   to={isMobileDisabled ? "/chat-body" : "#"}
                   key={index}
                   onClick={() => {
+                    axios.put(
+                      `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
+                    );
+                    setCounts((prev) => ({
+                      ...prev,
+                      [e.id]: 0,
+                    }));
+
+                    setReads((prev) => ({
+                      ...prev,
+                      [e.id]: true,
+                    }));
                     axios
                       .get(
                         `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
@@ -437,7 +359,12 @@ const Home = () => {
                         <label style={{ fontWeight: "bold" }}>
                           {e.createruser.username}
                         </label>
-                        <CheckCheck size={"20"} />
+                        {reads[e.id] ? (
+                          <CheckCheck size={"20"} color="blue" />
+                        ) : (
+                          <CheckCheck size={"20"} color="gray" />
+                        )}
+
                         <label style={{ color: "gray", fontSize: "10px" }}>
                           {timeAgo(times[e.id])}
                         </label>
@@ -446,7 +373,9 @@ const Home = () => {
                         <label style={{ color: "gray", fontSize: "12px" }}>
                           {messages[e.id]}
                         </label>
-                        <label className="message-card-lbl">2</label>
+                        <label className="message-card-lbl">
+                          {counts[e.id]}
+                        </label>
                       </div>
                     </div>
                   </div>
@@ -456,16 +385,7 @@ const Home = () => {
         </div>
       </div>
       {showChatSpace ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "100vh",
-          }}
-        >
+        <div className="home-message-body-empty">
           <FaMessage size={100} color="#e3adf9" />
           <label>Welcome to Chatterbox</label>
           <p>Start a conversation by adding new friends!</p>
