@@ -328,18 +328,18 @@ const Home = () => {
                   to={isMobileDisabled ? "/chat-body" : "#"}
                   key={index}
                   onClick={() => {
-                    axios.put(
-                      `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
-                    );
-                    setCounts((prev) => ({
-                      ...prev,
-                      [e.id]: 0,
-                    }));
+                    // axios.put(
+                    //   `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
+                    // );
+                    // setCounts((prev) => ({
+                    //   ...prev,
+                    //   [e.id]: 0,
+                    // }));
 
-                    setReads((prev) => ({
-                      ...prev,
-                      [e.id]: true,
-                    }));
+                    // setReads((prev) => ({
+                    //   ...prev,
+                    //   [e.id]: true,
+                    // }));
                     axios
                       .get(
                         `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`

@@ -10,8 +10,11 @@ import {
 } from "lucide-react";
 import Logo from "../images/message.png";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaCheckCircle } from "react-icons/fa";
 
 const Intro = () => {
   const [visibleButton1, setVisibleButton1] = useState(false);
@@ -33,7 +36,54 @@ const Intro = () => {
     npassword: "",
     cpassword: "",
   });
-  const [links, setLink] = useState(false);
+  const navigate = useNavigate();
+  const [emailValidate, setEmailValidate] = useState(true);
+  const [userNameValidate, setUserNameValidate] = useState(true);
+  const [npasswordValidate, setNpasswordValidate] = useState(true);
+  const [cpasswordValidate, setCpasswordValidate] = useState(true);
+
+  const isEmail = (email) => {
+    if (
+      typeof email === "string" &&
+      email.length !== 0 &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const isUserName = (username) => {
+    if (
+      typeof username === "string" &&
+      username.length !== 0 &&
+      /^[a-zA-Z0-9_]{3,16}$/.test(username)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const isPassword = (password) => {
+    if (
+      typeof password === "string" &&
+      password.length !== 0 &&
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(password)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const passwordMatch = (npass, cpass) => {
+    if (npass === cpass) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <div className="intro-container">
@@ -79,10 +129,24 @@ const Intro = () => {
               value={regTxt.email}
               onChange={(e) => {
                 setRegTxt((prev) => ({ ...prev, email: e.target.value }));
+                setEmailValidate(isEmail(e.target.value));
+                if (e.target.value.length === 0) {
+                  setEmailValidate(true);
+                }
               }}
             />
             <HelpCircle />
           </div>
+          <label
+            style={{
+              visibility:
+                !emailValidate && regTxt.email !== "" ? "visible" : "hidden",
+              color: "red",
+              fontSize: 10,
+            }}
+          >
+            Invalid email address
+          </label>
           <div className="home-message-list-1">
             <User2Icon />
             <input
@@ -91,10 +155,27 @@ const Intro = () => {
               value={regTxt.username}
               onChange={(e) => {
                 setRegTxt((prev) => ({ ...prev, username: e.target.value }));
+                setUserNameValidate(isUserName(e.target.value));
+                if (e.target.value.length === 0) {
+                  setUserNameValidate(true);
+                }
               }}
             />
             <HelpCircle />
           </div>
+          <label
+            style={{
+              visibility:
+                !userNameValidate && regTxt.username !== ""
+                  ? "visible"
+                  : "hidden",
+              color: "red",
+              fontSize: 10,
+            }}
+          >
+            Username must be 3-16 characters and contain only letters, numbers,
+            or underscores
+          </label>
           <div className="home-message-list-1">
             <Lock />
             <input
@@ -104,6 +185,10 @@ const Intro = () => {
               value={regTxt.npassword}
               onChange={(e) => {
                 setRegTxt((prev) => ({ ...prev, npassword: e.target.value }));
+                setNpasswordValidate(isPassword(e.target.value));
+                if (e.target.value.length === 0) {
+                  setNpasswordValidate(true);
+                }
               }}
             />
             <div
@@ -115,6 +200,19 @@ const Intro = () => {
               {eye1 ? <Eye /> : <EyeClosed />}
             </div>
           </div>
+          <label
+            style={{
+              visibility:
+                !npasswordValidate && regTxt.npassword !== ""
+                  ? "visible"
+                  : "hidden",
+              color: "red",
+              fontSize: 10,
+            }}
+          >
+            Password must be at least 8 characters long and include a letter and
+            a number
+          </label>
           <div className="home-message-list-1">
             <Lock />
             <input
@@ -124,6 +222,10 @@ const Intro = () => {
               value={regTxt.cpassword}
               onChange={(e) => {
                 setRegTxt((prev) => ({ ...prev, cpassword: e.target.value }));
+                setCpasswordValidate(isPassword(e.target.value));
+                if (e.target.value.length === 0) {
+                  setCpasswordValidate(true);
+                }
               }}
             />
             <div
@@ -135,27 +237,75 @@ const Intro = () => {
               {eye2 ? <Eye /> : <EyeClosed />}
             </div>
           </div>
+          <label
+            style={{
+              visibility:
+                !cpasswordValidate && regTxt.cpassword !== ""
+                  ? "visible"
+                  : "hidden",
+              color: "red",
+              fontSize: 10,
+            }}
+          >
+            Password must be at least 8 characters long and include a letter and
+            a number
+          </label>
           <button
             className="intro-button"
-            onClick={() => {
-              if (
-                regTxt.username.length !== 0 &&
-                regTxt.email.length !== 0 &&
-                regTxt.npassword.length !== 0 &&
-                regTxt.cpassword.length !== 0 &&
-                regTxt.cpassword === regTxt.npassword
-              ) {
-                axios
-                  .post("http://localhost:4000/api/users/set", {
-                    username: regTxt.username,
-                    email: regTxt.email,
-                    password: regTxt.cpassword,
-                  })
-                  .then((e) => {
-                    e.data.data
-                      ? alert("Register success")
-                      : alert("Regsiter unsuccess");
-                  });
+            onClick={async () => {
+              let toastId = "";
+              try {
+                if (
+                  isEmail(regTxt.email) &&
+                  isPassword(regTxt.npassword) &&
+                  isPassword(regTxt.cpassword) &&
+                  isUserName(regTxt.username)
+                ) {
+                  if (passwordMatch(regTxt.npassword, regTxt.cpassword)) {
+                    toastId = toast.loading("sign in...", {
+                      style: { color: "purple" },
+                    });
+                    const result = await axios.post(
+                      "http://localhost:4000/api/users/set",
+                      {
+                        username: regTxt.username,
+                        email: regTxt.email,
+                        password: regTxt.cpassword,
+                      }
+                    );
+
+                    if (result.data.data) {
+                      toast.update(toastId, {
+                        render: "Register success!",
+                        type: "success",
+                        isLoading: false,
+                        autoClose: 3000,
+                        icon: <FaCheckCircle color="purple" />,
+                      });
+                    } else {
+                      toast.update(toastId, {
+                        type: "error",
+                        autoClose: 3000,
+                        isLoading: false,
+                        render: "Something wrong!",
+                      });
+                    }
+                  } else {
+                    toast.update(toastId, {
+                      type: "error",
+                      autoClose: 3000,
+                      isLoading: false,
+                      render: "Something wrong!",
+                    });
+                  }
+                }
+              } catch (error) {
+                toast.update(toastId, {
+                  type: "error",
+                  autoClose: 3000,
+                  isLoading: false,
+                  render: "Something wrong!",
+                });
               }
             }}
           >
@@ -230,32 +380,65 @@ const Intro = () => {
 
           <button
             className="intro-button"
-            onClick={() => {
+            onClick={async () => {
+              let toastIds = toast.loading("logging in...", {
+                style: { color: "purple" },
+              });
               try {
-                if (loginTxt.username.length !== 0 && loginTxt.password.length !== 0) {
-                  axios
-                    .get(
-                      `http://localhost:4000/api/users/login?username=${loginTxt.username}&password=${loginTxt.password}`
-                    )
-                    .then((e) => {
-                      e.data.success ? setLink(true) : setLink(false);
+                if (
+                  loginTxt.username.length !== 0 &&
+                  loginTxt.password.length !== 0
+                ) {
+                  const result = await axios.post(
+                    `http://localhost:4000/api/users/login`,
+                    {
+                      username: loginTxt.username,
+                      password: loginTxt.password,
+                    }
+                  );
+                  if (result.data.success) {
+                    toast.update(toastIds, {
+                      render: "Login success!",
+                      type: "success",
+                      isLoading: false,
+                      autoClose: 3000,
+                      icon: <FaCheckCircle color="purple" />,
                     });
+                    setTimeout(() => {
+                      navigate("/home");
+                    }, 2500);
+                  } else {
+                    toast.update(toastIds, {
+                      type: "error",
+                      autoClose: 3000,
+                      isLoading: false,
+                      render: "Wrong candidate",
+                    });
+                    navigate("/");
+                  }
+                }else{
+                  toast.update(toastIds, {
+                    type: "error",
+                    autoClose: 3000,
+                    isLoading: false,
+                    render: "fill all fields! ",
+                  });
                 }
               } catch (error) {
-                
+                toast.update(toastIds, {
+                  type: "error",
+                  autoClose: 3000,
+                  isLoading: false,
+                  render: "Wrong candidate",
+                });
               }
-              
             }}
           >
-            <Link
-              to={links ? "/home" : "/"}
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Login
-            </Link>
+            Login
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
