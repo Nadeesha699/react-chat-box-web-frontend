@@ -9,8 +9,8 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route element={<Intro/>} path='/'/>
-      <Route element={<Home/>}  path='/home/:id'/>
-      <Route element={<ChatBody/>} path='/chat-body/:id'/>
+      <Route element={<Home/>}  path='/home/:uid'/>
+      <Route element={<ChatBody/>} path='/chat-body/:uid'/>
     </Routes>
     </BrowserRouter>
   );

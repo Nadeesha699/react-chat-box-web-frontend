@@ -31,6 +31,7 @@ const Home = () => {
   const [counts, setCounts] = useState({});
   const [senderConId, setSenderConId] = useState(0);
   const { uid } = useParams();
+  // console.log(uid)
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -55,111 +56,115 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const loadData = () => {
-      axios
-        .get(
-          `http://localhost:4000/api/conversation/get-all/by-user-id?id=${uid}`
-        )
-        .then((e) => {
-          setConversationData(e.data.data);
+    try {
+      const loadData = () => {
+        axios
+          .get(
+            `http://localhost:4000/api/conversation/get-all/by-user-id?id=${uid}`
+          )
+          .then((e) => {
+            setConversationData(e.data.data);
+          });
+
+        axios.get("http://localhost:4000/api/users/get-all").then((e) => {
+          setUsers(e.data.data);
         });
+      };
 
-      axios.get("http://localhost:4000/api/users/get-all").then((e) => {
-        setUsers(e.data.data);
-      });
-    };
+      loadData();
 
-    loadData();
+      const fetchMessages = async () => {
+        const newMessages = {};
+        for (let e of conversationData) {
+          const message = await latestMessage(e.id);
+          newMessages[e.id] = message;
+        }
+        setMessages(newMessages);
+      };
 
-    const fetchMessages = async () => {
-      const newMessages = {};
-      for (let e of conversationData) {
-        const message = await latestMessage(e.id);
-        newMessages[e.id] = message;
-      }
-      setMessages(newMessages);
-    };
+      fetchMessages();
 
-    fetchMessages();
+      const fetchTimes = async () => {
+        const newTimes = {};
+        for (let e of conversationData) {
+          const times = await latestTime(e.id);
+          newTimes[e.id] = times;
+        }
+        setTimes(newTimes);
+      };
 
-    const fetchTimes = async () => {
-      const newTimes = {};
-      for (let e of conversationData) {
-        const times = await latestTime(e.id);
-        newTimes[e.id] = times;
-      }
-      setTimes(newTimes);
-    };
+      fetchTimes();
 
-    fetchTimes();
+      const fetchReads = async () => {
+        const newReads = {};
+        for (let e of conversationData) {
+          const reads = await latestRead(e.id);
+          newReads[e.id] = reads;
+        }
+        setReads(newReads);
+      };
 
-    const fetchReads = async () => {
-      const newReads = {};
-      for (let e of conversationData) {
-        const reads = await latestRead(e.id);
-        newReads[e.id] = reads;
-      }
-      setReads(newReads);
-    };
+      fetchReads();
 
-    fetchReads();
+      const fetchCounts = async () => {
+        const newCounts = {};
+        for (let e of conversationData) {
+          const counts = await unreadCount(e.id);
+          newCounts[e.id] = counts;
+        }
+        setCounts(newCounts);
+      };
 
-    const fetchCounts = async () => {
-      const newCounts = {};
-      for (let e of conversationData) {
-        const counts = await unreadCount(e.id);
-        newCounts[e.id] = counts;
-      }
-      setCounts(newCounts);
-    };
-
-    fetchCounts();
-    scrollToBottom();
+      fetchCounts();
+      scrollToBottom();
+    } catch (error) {}
   }, [chatData, conversationData, uid]);
 
   const sendMessage = () => {
-    const newMessage = {
-      message: messageText,
-      conversationId: senderConId,
-      userid: uid,
-      creatAt: new Date().toISOString(),
-    };
-
-    axios.put(
-      `http://localhost:4000/api/message/update/by-conversation-id?id=${senderConId}`
-    );
-    setCounts((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: 0,
-    }));
-
-    setReads((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: true,
-    }));
-
-    setChatData([...chatData, newMessage]);
-
-    setMessages((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: newMessage.message,
-    }));
-
-    setTimes((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: newMessage.creatAt,
-    }));
-
-    axios
-      .post(`http://localhost:4000/api/message/set`, {
+    try {
+      const newMessage = {
         message: messageText,
         conversationId: senderConId,
         userid: uid,
-      })
-      .then((e) => {
-        setMessageText("");
-        e.data.data ? alert("message send") : alert("message unsend");
-      });
+        creatAt: new Date().toISOString(),
+      };
+
+      axios.put(
+        `http://localhost:4000/api/message/update/by-conversation-id?id=${senderConId}`
+      );
+      setCounts((prev) => ({
+        ...prev,
+        [newMessage.conversationId]: 0,
+      }));
+
+      setReads((prev) => ({
+        ...prev,
+        [newMessage.conversationId]: true,
+      }));
+
+      setChatData([...chatData, newMessage]);
+
+      setMessages((prev) => ({
+        ...prev,
+        [newMessage.conversationId]: newMessage.message,
+      }));
+
+      setTimes((prev) => ({
+        ...prev,
+        [newMessage.conversationId]: newMessage.creatAt,
+      }));
+
+      axios
+        .post(`http://localhost:4000/api/message/set`, {
+          message: messageText,
+          conversationId: senderConId,
+          userid: uid,
+        })
+        .then((e) => {
+          setMessageText("");
+          e.data.data ? alert("message send") : alert("message unsend");
+        });
+    } catch (error) {}
   };
 
   return (
@@ -221,9 +226,10 @@ const Home = () => {
                       ...prev,
                       [e.id]: true,
                     }));
+                    console.log(e.id);
                     axios
                       .get(
-                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
+                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=3`
                       )
                       .then((e) => {
                         setChatData(e.data.data);
