@@ -2,73 +2,64 @@ import axios from "axios";
 import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { FaMessage } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import conversationJsonData from "../json/conversationJsonData.json";
+import chatJsonData from "../json/chatJsonData.json";
+import userJsonData from "../json/userJsonData.json";
+import { timeAgo } from "../utils/utils";
+import {
+  latestMessage,
+  latestRead,
+  latestTime,
+  unreadCount,
+} from "../services/services";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
 const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [searchText1, setSearchText1] = useState("");
   const [visibleUserList, setVisibleUserList] = useState(false);
-  const [conversationData, setConversationData] = useState([
-    {
-      id: 0,
-      createrId: 0,
-      senderId: 0,
-      createAt: "",
-      updateAt: "",
-      createruser: {
-        id: 0,
-        username: "",
-        email: "",
-        password: "",
-        createAt: "",
-        updateAt: "",
-      },
-      senderuser: {
-        id: 0,
-        username: "",
-        email: "",
-        password: "",
-        createAt: "",
-        updateAt: "",
-      },
-    },
-  ]);
-  const [chatData, setChatData] = useState([
-    {
-      id: 0,
-      message: "",
-      conversationId: 0,
-      userid: 0,
-      createAt: "",
-      updateAt: "",
-      user: {
-        id: 0,
-        username: "",
-        email: "",
-        password: "",
-        createAt: "",
-        updateAt: "",
-      },
-    },
-  ]);
-  const [users, setUsers] = useState([
-    {
-      id: 0,
-      username: "",
-      email: "",
-      password: "",
-      createAt: "",
-      updateAt: "",
-    },
-  ]);
+  const [conversationData, setConversationData] =
+    useState(conversationJsonData);
+  const [chatData, setChatData] = useState(chatJsonData);
+  const [users, setUsers] = useState(userJsonData);
   const [showChatSpace, setShowChatSpace] = useState(true);
   const [messageText, setMessageText] = useState("");
+  const [messages, setMessages] = useState({});
+  const [times, setTimes] = useState({});
+  const [reads, setReads] = useState({});
+  const [counts, setCounts] = useState({});
+  const [senderConId, setSenderConId] = useState(0);
+  const { uid } = useParams();
+
+  const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 575.98);
+      };
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return isMobile;
+  };
+
+  const isMobileDisabled = useIsMobile();
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     const loadData = () => {
       axios
-        .get("http://localhost:4000/api/conversation/get-all/by-user-id?id=9")
+        .get(
+          `http://localhost:4000/api/conversation/get-all/by-user-id?id=${uid}`
+        )
         .then((e) => {
           setConversationData(e.data.data);
         });
@@ -77,140 +68,9 @@ const Home = () => {
         setUsers(e.data.data);
       });
     };
+
     loadData();
-  }, []);
 
-  function timeAgo(date) {
-    const now = new Date();
-    const diff = now - new Date(date);
-
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const months = Math.floor(days / 30);
-    const years = Math.floor(months / 12);
-
-    if (years > 0) {
-      return `${years}y`;
-    } else if (months > 0) {
-      return `${months}mo`;
-    } else if (days > 0) {
-      return `${days}d`;
-    } else if (hours > 0) {
-      return `${hours}h`;
-    } else if (minutes > 0) {
-      return `${minutes}m`;
-    } else if (seconds > 0) {
-      return `${seconds}s`;
-    } else {
-      return "Just now";
-    }
-  }
-
-  const [messages, setMessages] = useState({});
-  const [times, setTimes] = useState({});
-  const [reads, setReads] = useState({});
-  const [counts, setCounts] = useState({});
-
-  const latestMessage = async (a) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
-      );
-      const data = response.data.data;
-      return data ? data[data.length - 1]?.message : "No message found";
-    } catch (error) {
-      // console.error("Error fetching message data:", error);
-      // return "Error fetching message data";
-    }
-  };
-
-  const latestTime = async (a) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
-      );
-      const data = response.data.data;
-      return data ? data[data.length - 1]?.createAt : "N/A";
-    } catch (error) {
-      // console.error("Error fetching message data:", error);
-      // return "Error fetching message data";
-    }
-  };
-
-  const latestRead = async (a) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
-      );
-      const data = response.data.data;
-      return data ? data[data.length - 1]?.read : false;
-    } catch (error) {
-      // console.error("Error fetching message data:", error);
-      // return "Error fetching message data";
-    }
-  };
-
-  const unreadCount = async (a) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/message/get-all/unread-messages/by-conversation-id?id=${a}`
-      );
-      const data = response.data.data;
-      return data ? data : 0;
-    } catch (error) {
-      // console.error("Error fetching message data:", error);
-      // return "Error fetching message data";
-    }
-  };
-
-  const sendMessage = () => {
-    const newMessage = {
-      message: messageText,
-      conversationId: 2,
-      userid: 7,
-      creatAt: new Date().toISOString(),
-    };
-
-    axios.put(
-      `http://localhost:4000/api/message/update/by-conversation-id?id=2`
-    );
-    setCounts((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: 0,
-    }));
-
-    setReads((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: true,
-    }));
-
-    setChatData([...chatData, newMessage]);
-
-    setMessages((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: newMessage.message,
-    }));
-
-    setTimes((prev) => ({
-      ...prev,
-      [newMessage.conversationId]: newMessage.creatAt,
-    }));
-
-    axios
-      .post(`http://localhost:4000/api/message/set`, {
-        message: messageText,
-        conversationId: 2,
-        userid: 7,
-      })
-      .then((e) => {
-        setMessageText("");
-        e.data.data ? alert("message send") : alert("message unsend");
-      });
-  };
-
-  useEffect(() => {
     const fetchMessages = async () => {
       const newMessages = {};
       for (let e of conversationData) {
@@ -254,32 +114,53 @@ const Home = () => {
     };
 
     fetchCounts();
-  }, [conversationData]);
-
-  const useIsMobile = () => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
-
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 575.98);
-      };
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    return isMobile;
-  };
-  const isMobileDisabled = useIsMobile();
-
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
     scrollToBottom();
-  }, [chatData]);
+  }, [chatData, conversationData, uid]);
+
+  const sendMessage = () => {
+    const newMessage = {
+      message: messageText,
+      conversationId: senderConId,
+      userid: uid,
+      creatAt: new Date().toISOString(),
+    };
+
+    axios.put(
+      `http://localhost:4000/api/message/update/by-conversation-id?id=${senderConId}`
+    );
+    setCounts((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: 0,
+    }));
+
+    setReads((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: true,
+    }));
+
+    setChatData([...chatData, newMessage]);
+
+    setMessages((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: newMessage.message,
+    }));
+
+    setTimes((prev) => ({
+      ...prev,
+      [newMessage.conversationId]: newMessage.creatAt,
+    }));
+
+    axios
+      .post(`http://localhost:4000/api/message/set`, {
+        message: messageText,
+        conversationId: senderConId,
+        userid: uid,
+      })
+      .then((e) => {
+        setMessageText("");
+        e.data.data ? alert("message send") : alert("message unsend");
+      });
+  };
 
   return (
     <div className="home-container">
@@ -328,24 +209,25 @@ const Home = () => {
                   to={isMobileDisabled ? "/chat-body" : "#"}
                   key={index}
                   onClick={() => {
-                    // axios.put(
-                    //   `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
-                    // );
-                    // setCounts((prev) => ({
-                    //   ...prev,
-                    //   [e.id]: 0,
-                    // }));
+                    axios.put(
+                      `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
+                    );
+                    setCounts((prev) => ({
+                      ...prev,
+                      [e.id]: 0,
+                    }));
 
-                    // setReads((prev) => ({
-                    //   ...prev,
-                    //   [e.id]: true,
-                    // }));
+                    setReads((prev) => ({
+                      ...prev,
+                      [e.id]: true,
+                    }));
                     axios
                       .get(
                         `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
                       )
                       .then((e) => {
                         setChatData(e.data.data);
+                        setSenderConId(e.data.data.id);
                         chatData
                           ? setShowChatSpace(false)
                           : setShowChatSpace(true);
@@ -403,17 +285,18 @@ const Home = () => {
                   key={index}
                   style={{
                     display: "flex",
-                    justifyContent: e.userid === 7 ? "flex-end" : "flex-start",
+                    justifyContent:
+                      e.userid === uid ? "flex-end" : "flex-start",
                   }}
                 >
                   <div
                     style={{
-                      backgroundColor: e.userid === 7 ? "#e3adf9" : "#cfcfcf",
+                      backgroundColor: e.userid === uid ? "#e3adf9" : "#cfcfcf",
                       width: "20%",
                       borderBottomLeftRadius: "20px",
                       borderBottomRightRadius: "20px",
-                      borderTopRightRadius: e.userid === 7 ? 0 : "20px",
-                      borderTopLeftRadius: e.userid === 7 ? "20px" : 0,
+                      borderTopRightRadius: e.userid === uid ? 0 : "20px",
+                      borderTopLeftRadius: e.userid === uid ? "20px" : 0,
                       padding: "1%",
                       display: "flex",
                       flexDirection: "column",
@@ -465,7 +348,7 @@ const Home = () => {
                 }
               }}
             />
-            <Send onClick={sendMessage} />
+            <Send onClick={sendMessage()} />
           </div>
         </div>
       )}
@@ -485,7 +368,7 @@ const Home = () => {
           height: "300px",
         }}
       >
-        <div className="home-message-list-1">
+        <div className="home-message-list-1-1">
           <Search />
           <input
             placeholder="search"
@@ -515,6 +398,42 @@ const Home = () => {
             .map((e, index) => {
               return (
                 <div
+                  onClick={async () => {
+                    const a = await axios.get(
+                      `http://localhost:4000/api/conversation/get-all/by-user-id?id=${e.id}`
+                    );
+                    if (a.data.data[0]) {
+                      const results = await axios.get(
+                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a.data.data[0].id}`
+                      );
+
+                      setChatData(results.data.data);
+                      setSenderConId(e.data.data.id);
+                      chatData
+                        ? setShowChatSpace(false)
+                        : setShowChatSpace(true);
+                    } else {
+                      const result = await axios.post(
+                        "http://localhost:4000/api/conversation/set",
+                        {
+                          createrId: uid,
+                          senderId: a.data.data[0].id,
+                        }
+                      );
+                      if (result.data.data) {
+                        const results = await axios.get(
+                          `http://localhost:4000/api/message/get-all/by-conversation-id?id=${result.data.data[0].id}`
+                        );
+
+                        setChatData(results.data.data);
+                        setSenderConId(e.data.data.id);
+                        chatData
+                          ? setShowChatSpace(false)
+                          : setShowChatSpace(true);
+                      } else {
+                      }
+                    }
+                  }}
                   key={index}
                   style={{
                     display: "flex",

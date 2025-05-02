@@ -1,0 +1,25 @@
+[
+  {
+    "id": 0,
+    "createrId": 0,
+    "senderId": 0,
+    "createAt": "",
+    "updateAt": "",
+    "createruser": {
+      "id": 0,
+      "username": "",
+      "email": "",
+      "password": "",
+      "createAt": "",
+      "updateAt": ""
+    },
+    "senderuser": {
+      "id": 0,
+      "username": "",
+      "email": "",
+      "password": "",
+      "createAt": "",
+      "updateAt": ""
+    }
+  }
+]

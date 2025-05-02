@@ -15,8 +15,10 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCheckCircle } from "react-icons/fa";
+import { isEmail, isPassword, isUserName, passwordMatch } from "../validation/Validation";
 
 const Intro = () => {
+
   const [visibleButton1, setVisibleButton1] = useState(false);
   const [visibleRegScreen1, setVisibleRegScreen1] = useState(true);
   const [visibleRegScreen2, setVisibleRegScreen2] = useState(false);
@@ -36,54 +38,13 @@ const Intro = () => {
     npassword: "",
     cpassword: "",
   });
+
   const navigate = useNavigate();
+
   const [emailValidate, setEmailValidate] = useState(true);
   const [userNameValidate, setUserNameValidate] = useState(true);
   const [npasswordValidate, setNpasswordValidate] = useState(true);
   const [cpasswordValidate, setCpasswordValidate] = useState(true);
-
-  const isEmail = (email) => {
-    if (
-      typeof email === "string" &&
-      email.length !== 0 &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isUserName = (username) => {
-    if (
-      typeof username === "string" &&
-      username.length !== 0 &&
-      /^[a-zA-Z0-9_]{3,16}$/.test(username)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isPassword = (password) => {
-    if (
-      typeof password === "string" &&
-      password.length !== 0 &&
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(password)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-  const passwordMatch = (npass, cpass) => {
-    if (npass === cpass) {
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   return (
     <div className="intro-container">
@@ -405,7 +366,7 @@ const Intro = () => {
                       icon: <FaCheckCircle color="purple" />,
                     });
                     setTimeout(() => {
-                      navigate("/home");
+                      navigate(`/home/${result.data.data.id}`);
                     }, 2500);
                   } else {
                     toast.update(toastIds, {

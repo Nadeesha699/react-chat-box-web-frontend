@@ -1,0 +1,18 @@
+[
+    {
+        "id": 0,
+        "message": "",
+        "conversationId": 0,
+        "userid": 0,
+        "createAt": "",
+        "updateAt": "",
+        "user": {
+            "id": 0,
+            "username": "",
+            "email": "",
+            "password": "",
+            "createAt": "",
+            "updateAt": ""
+        }
+    }
+]
