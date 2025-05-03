@@ -366,7 +366,8 @@ const Intro = () => {
                       icon: <FaCheckCircle color="purple" />,
                     });
                     setTimeout(() => {
-                      navigate(`/home/${result.data.data.id}`);
+                      navigate(`/home/7`);
+                      // navigate(`/home/${result.data.data.id}`);
                     }, 2500);
                   } else {
                     toast.update(toastIds, {

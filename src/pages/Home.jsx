@@ -29,7 +29,7 @@ const Home = () => {
   const [times, setTimes] = useState({});
   const [reads, setReads] = useState({});
   const [counts, setCounts] = useState({});
-  const [senderConId, setSenderConId] = useState(0);
+  const [senderConId, setSenderConId] = useState("");
   const { uid } = useParams();
   // console.log(uid)
 
@@ -72,7 +72,11 @@ const Home = () => {
       };
 
       loadData();
+    } catch (error) {}
+  }, [uid]);
 
+  useEffect(() => {
+    try {
       const fetchMessages = async () => {
         const newMessages = {};
         for (let e of conversationData) {
@@ -118,7 +122,7 @@ const Home = () => {
       fetchCounts();
       scrollToBottom();
     } catch (error) {}
-  }, [chatData, conversationData, uid]);
+  }, [conversationData]);
 
   const sendMessage = () => {
     try {
@@ -158,7 +162,7 @@ const Home = () => {
         .post(`http://localhost:4000/api/message/set`, {
           message: messageText,
           conversationId: senderConId,
-          userid: uid,
+          userid: parseInt(uid),
         })
         .then((e) => {
           setMessageText("");
@@ -214,9 +218,17 @@ const Home = () => {
                   to={isMobileDisabled ? "/chat-body" : "#"}
                   key={index}
                   onClick={() => {
-                    axios.put(
-                      `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
-                    );
+                    axios
+                      .put(
+                        `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
+                      )
+                      .catch((err) =>
+                        console.error(
+                          "PUT error:",
+                          err.response?.data || err.message
+                        )
+                      );
+
                     setCounts((prev) => ({
                       ...prev,
                       [e.id]: 0,
@@ -226,18 +238,27 @@ const Home = () => {
                       ...prev,
                       [e.id]: true,
                     }));
-                    console.log(e.id);
+
                     axios
                       .get(
-                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=3`
+                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
                       )
-                      .then((e) => {
-                        setChatData(e.data.data);
-                        setSenderConId(e.data.data.id);
-                        chatData
-                          ? setShowChatSpace(false)
-                          : setShowChatSpace(true);
-                      });
+                      .then((res) => {
+                        const messages = res.data.data;
+                        if (messages.length > 0) {
+                          setChatData(messages);
+                          setSenderConId(messages[0].conversationId);
+                          setShowChatSpace(false);
+                        } else {
+                          setShowChatSpace(true);
+                        }
+                      })
+                      .catch((err) =>
+                        console.error(
+                          "GET error:",
+                          err.response?.data || err.message
+                        )
+                      );
                   }}
                 >
                   <div className="message-card" key={index}>
@@ -354,7 +375,7 @@ const Home = () => {
                 }
               }}
             />
-            <Send onClick={sendMessage()} />
+            <Send onClick={sendMessage} />
           </div>
         </div>
       )}
@@ -405,40 +426,43 @@ const Home = () => {
               return (
                 <div
                   onClick={async () => {
-                    const a = await axios.get(
-                      `http://localhost:4000/api/conversation/get-all/by-user-id?id=${e.id}`
-                    );
-                    if (a.data.data[0]) {
-                      const results = await axios.get(
-                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a.data.data[0].id}`
-                      );
+                    // const a = await axios.get(
+                    //   `http://localhost:4000/api/conversation/get-all/by-user-id?id=${e.id}`
+                    // );
+                    // if (a.data.data[0]) {
+                    //   const results = await axios.get(
+                    //     `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a.data.data[0].id}`
+                    //   );
 
-                      setChatData(results.data.data);
-                      setSenderConId(e.data.data.id);
-                      chatData
-                        ? setShowChatSpace(false)
-                        : setShowChatSpace(true);
-                    } else {
-                      const result = await axios.post(
-                        "http://localhost:4000/api/conversation/set",
-                        {
-                          createrId: uid,
-                          senderId: a.data.data[0].id,
-                        }
-                      );
-                      if (result.data.data) {
-                        const results = await axios.get(
-                          `http://localhost:4000/api/message/get-all/by-conversation-id?id=${result.data.data[0].id}`
-                        );
+                    //   if (results.data.data.length !== 0) {
+                    //     setChatData(results.data.data);
+                    //     setSenderConId(e.data.data.id);
+                    //     setShowChatSpace(false);
+                    //   } else {
+                    //     setSenderConId(a.data.data[0].id)
+                    //     setShowChatSpace(true);
+                    //   }
+                    // } else {
+                    //   const result = await axios.post(
+                    //     "http://localhost:4000/api/conversation/set",
+                    //     {
+                    //       createrId: uid,
+                    //       senderId: a.data.data[0].id,
+                    //     }
+                    //   );
+                    //   if (result.data.data) {
+                    //     const results = await axios.get(
+                    //       `http://localhost:4000/api/message/get-all/by-conversation-id?id=${result.data.data[0].id}`
+                    //     );
 
-                        setChatData(results.data.data);
-                        setSenderConId(e.data.data.id);
-                        chatData
-                          ? setShowChatSpace(false)
-                          : setShowChatSpace(true);
-                      } else {
-                      }
-                    }
+                    //     setChatData(results.data.data);
+                    //     setSenderConId(e.data.data.id);
+                    //     chatData
+                    //       ? setShowChatSpace(false)
+                    //       : setShowChatSpace(true);
+                    //   } else {
+                    //   }
+                    // }
                   }}
                   key={index}
                   style={{
