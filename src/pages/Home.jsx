@@ -1,7 +1,6 @@
 import axios from "axios";
 import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { FaMessage } from "react-icons/fa6";
 import { Link, useParams } from "react-router-dom";
 import conversationJsonData from "../json/conversationJsonData.json";
 import chatJsonData from "../json/chatJsonData.json";
@@ -13,6 +12,7 @@ import {
   latestTime,
   unreadCount,
 } from "../services/services";
+import { EmptyMessageBody } from "../components/Components";
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
 const Home = () => {
@@ -31,7 +31,7 @@ const Home = () => {
   const [counts, setCounts] = useState({});
   const [senderConId, setSenderConId] = useState("");
   const { uid } = useParams();
-  // console.log(uid)
+  const [msgBodyEmpty, setMsgBodyEmpty] = useState(false);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -63,7 +63,9 @@ const Home = () => {
             `http://localhost:4000/api/conversation/get-all/by-user-id?id=${uid}`
           )
           .then((e) => {
-            setConversationData(e.data.data);
+            if (e.data.data.length !== 0) {
+              setConversationData(e.data.data);
+            }
           });
 
         axios.get("http://localhost:4000/api/users/get-all").then((e) => {
@@ -129,7 +131,7 @@ const Home = () => {
       const newMessage = {
         message: messageText,
         conversationId: senderConId,
-        userid: uid,
+        userid: parseInt(uid),
         creatAt: new Date().toISOString(),
       };
 
@@ -165,8 +167,10 @@ const Home = () => {
           userid: parseInt(uid),
         })
         .then((e) => {
+          setShowChatSpace(false);
+          setMsgBodyEmpty(false);
           setMessageText("");
-          e.data.data ? alert("message send") : alert("message unsend");
+          // e.data.data ? alert("message send") : alert("message unsend");
         });
     } catch (error) {}
   };
@@ -219,38 +223,40 @@ const Home = () => {
                   key={index}
                   onClick={() => {
                     axios
-                      .put(
-                        `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
-                      )
-                      .catch((err) =>
-                        console.error(
-                          "PUT error:",
-                          err.response?.data || err.message
-                        )
-                      );
-
-                    setCounts((prev) => ({
-                      ...prev,
-                      [e.id]: 0,
-                    }));
-
-                    setReads((prev) => ({
-                      ...prev,
-                      [e.id]: true,
-                    }));
-
-                    axios
                       .get(
                         `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
                       )
                       .then((res) => {
                         const messages = res.data.data;
                         if (messages.length > 0) {
+                          axios
+                            .put(
+                              `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
+                            )
+                            .catch((err) =>
+                              console.error(
+                                "PUT error:",
+                                err.response?.data || err.message
+                              )
+                            );
+
+                          setCounts((prev) => ({
+                            ...prev,
+                            [e.id]: 0,
+                          }));
+
+                          setReads((prev) => ({
+                            ...prev,
+                            [e.id]: true,
+                          }));
                           setChatData(messages);
                           setSenderConId(messages[0].conversationId);
                           setShowChatSpace(false);
+                          setMsgBodyEmpty(false);
                         } else {
-                          setShowChatSpace(true);
+                          setSenderConId(e.id);
+                          setShowChatSpace(false);
+                          setMsgBodyEmpty(true);
                         }
                       })
                       .catch((err) =>
@@ -265,9 +271,15 @@ const Home = () => {
                     <User size={"40"} />
                     <div className="message-card-1">
                       <div className="message-card-2">
-                        <label style={{ fontWeight: "bold" }}>
-                          {e.createruser.username}
-                        </label>
+                        {e.createrId === parseInt(uid) ? (
+                          <label style={{ fontWeight: "bold" }}>
+                            {e.senderuser.username}
+                          </label>
+                        ) : (
+                          <label style={{ fontWeight: "bold" }}>
+                            {e.createruser.username}
+                          </label>
+                        )}
                         {reads[e.id] ? (
                           <CheckCheck size={"20"} color="blue" />
                         ) : (
@@ -294,55 +306,57 @@ const Home = () => {
         </div>
       </div>
       {showChatSpace ? (
-        <div className="home-message-body-empty">
-          <FaMessage size={100} color="#e3adf9" />
-          <label>Welcome to Chatterbox</label>
-          <p>Start a conversation by adding new friends!</p>
-          <p>Your chats will appear here once you start messaging.</p>
-        </div>
+        <EmptyMessageBody />
       ) : (
         <div className="home-message-body">
           <div className="home-message-body-1">
             <label style={{ fontWeight: "bold" }}>Nadeesha Ruwandima</label>
           </div>
           <div className="home-message-card-1">
-            {chatData.map((e, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    justifyContent:
-                      e.userid === uid ? "flex-end" : "flex-start",
-                  }}
-                >
-                  <div
-                    style={{
-                      backgroundColor: e.userid === uid ? "#e3adf9" : "#cfcfcf",
-                      width: "20%",
-                      borderBottomLeftRadius: "20px",
-                      borderBottomRightRadius: "20px",
-                      borderTopRightRadius: e.userid === uid ? 0 : "20px",
-                      borderTopLeftRadius: e.userid === uid ? "20px" : 0,
-                      padding: "1%",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <label style={{ fontSize: "12px" }}>{e.message}</label>
-                    <label
+            {msgBodyEmpty
+              ? ""
+              : chatData.map((e, index) => {
+                  return (
+                    <div
+                      key={index}
                       style={{
-                        textAlign: "right",
-                        color: "gray",
-                        fontSize: "10px",
+                        display: "flex",
+                        justifyContent:
+                          e.userid === parseInt(uid)
+                            ? "flex-end"
+                            : "flex-start",
                       }}
                     >
-                      {timeAgo(e.createAt)}
-                    </label>
-                  </div>
-                </div>
-              );
-            })}
+                      <div
+                        style={{
+                          backgroundColor:
+                            e.userid === parseInt(uid) ? "#e3adf9" : "#cfcfcf",
+                          width: "20%",
+                          borderBottomLeftRadius: "20px",
+                          borderBottomRightRadius: "20px",
+                          borderTopRightRadius:
+                            e.userid === parseInt(uid) ? 0 : "20px",
+                          borderTopLeftRadius:
+                            e.userid === parseInt(uid) ? "20px" : 0,
+                          padding: "1%",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <label style={{ fontSize: "12px" }}>{e.message}</label>
+                        <label
+                          style={{
+                            textAlign: "right",
+                            color: "gray",
+                            fontSize: "10px",
+                          }}
+                        >
+                          {timeAgo(e.createAt)}
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
             <div ref={messagesEndRef} />
           </div>
           <div
@@ -426,43 +440,45 @@ const Home = () => {
               return (
                 <div
                   onClick={async () => {
-                    // const a = await axios.get(
-                    //   `http://localhost:4000/api/conversation/get-all/by-user-id?id=${e.id}`
-                    // );
-                    // if (a.data.data[0]) {
-                    //   const results = await axios.get(
-                    //     `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a.data.data[0].id}`
-                    //   );
+                    const result1 = await axios.get(
+                      `http://localhost:4000/api/conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
+                    );
+                    if (result1.data.data[0]) {
+                      const result3 = await axios.get(
+                        `http://localhost:4000/api/message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
+                      );
+                      if (result3.data.data.length !== 0) {
+                        setChatData(result3.data.data);
+                        setSenderConId(result1.data.data[0].id);
+                        setShowChatSpace(false);
+                        setMsgBodyEmpty(false);
+                      } else {
+                        setSenderConId(result1.data.data[0].id);
+                        setShowChatSpace(false);
+                        setMsgBodyEmpty(true);
+                      }
+                    } else {
+                      // setChatData([...chatData, newMessage]);
+                      const result2 = await axios.post(
+                        "http://localhost:4000/api/conversation/set",
+                        {
+                          createrId: parseInt(uid),
+                          senderId: parseInt(e.id),
+                        }
+                      );
 
-                    //   if (results.data.data.length !== 0) {
-                    //     setChatData(results.data.data);
-                    //     setSenderConId(e.data.data.id);
-                    //     setShowChatSpace(false);
-                    //   } else {
-                    //     setSenderConId(a.data.data[0].id)
-                    //     setShowChatSpace(true);
-                    //   }
-                    // } else {
-                    //   const result = await axios.post(
-                    //     "http://localhost:4000/api/conversation/set",
-                    //     {
-                    //       createrId: uid,
-                    //       senderId: a.data.data[0].id,
-                    //     }
-                    //   );
-                    //   if (result.data.data) {
-                    //     const results = await axios.get(
-                    //       `http://localhost:4000/api/message/get-all/by-conversation-id?id=${result.data.data[0].id}`
-                    //     );
+                      if (result2.data.data) {
+                        setSenderConId(result2.data.data.id);
 
-                    //     setChatData(results.data.data);
-                    //     setSenderConId(e.data.data.id);
-                    //     chatData
-                    //       ? setShowChatSpace(false)
-                    //       : setShowChatSpace(true);
-                    //   } else {
-                    //   }
-                    // }
+                        // setConversationData((prev) => [
+                        //   ...prev,
+                        //   newConversation,
+                        // ]);
+
+                        setShowChatSpace(false);
+                        setMsgBodyEmpty(true);
+                      }
+                    }
                   }}
                   key={index}
                   style={{
