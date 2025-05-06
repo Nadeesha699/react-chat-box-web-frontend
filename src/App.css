@@ -38,6 +38,14 @@
   width: 50%;
 }
 
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
 .home-message-list-2 {
   display: flex;
   flex-direction: row;
@@ -271,7 +279,7 @@
     width: 100%;
   }
 
-  .home-message-body-empty{
+  .home-message-body-empty {
     display: none;
   }
 
