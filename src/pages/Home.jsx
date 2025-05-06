@@ -226,7 +226,12 @@ const Home = () => {
                   return (
                     <Link
                       className="link-message-body"
-                      to={isMobileDisabled ? "/chat-body" : "#"}
+                      to={
+                        isMobileDisabled
+                          ?  `/chat-body/${uid}/${e.id}?senderName=${encodeURIComponent(e.senderuser.username)}`
+                            
+                          : "#"
+                      }
                       key={index}
                       onClick={() => {
                         axios
@@ -468,7 +473,9 @@ const Home = () => {
                             setSenderName(
                               result1.data.data[0].senderuser?.username
                             );
-                            console.log(result1.data.data[0].senderuser?.username)
+                            console.log(
+                              result1.data.data[0].senderuser?.username
+                            );
                             setShowChatSpace(false);
                             setMsgBodyEmpty(false);
                           } else {
@@ -476,7 +483,9 @@ const Home = () => {
                             setSenderName(
                               result1.data.data[0].senderuser?.username
                             );
-                            console.log(result1.data.data[0].senderuser?.username)
+                            console.log(
+                              result1.data.data[0].senderuser?.username
+                            );
                             setShowChatSpace(false);
                             setMsgBodyEmpty(true);
                           }
