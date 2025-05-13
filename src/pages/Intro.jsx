@@ -15,10 +15,15 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCheckCircle } from "react-icons/fa";
-import { isEmail, isPassword, isUserName, passwordMatch } from "../validation/Validation";
+import {
+  isEmail,
+  isPassword,
+  isUserName,
+  passwordMatch,
+} from "../validation/Validation";
+import { api_url } from "../components/Components";
 
 const Intro = () => {
-
   const [visibleButton1, setVisibleButton1] = useState(false);
   const [visibleRegScreen1, setVisibleRegScreen1] = useState(true);
   const [visibleRegScreen2, setVisibleRegScreen2] = useState(false);
@@ -79,11 +84,10 @@ const Intro = () => {
         <div
           className="intro-div-1"
           style={{ display: visibleRegScreen2 ? "flex" : "none" }}
-          // style={{ display: "flex" }}
         >
           <img src={Logo} alt="img" className="intro-logo" />
           <div className="home-message-list-1">
-            <Mail />
+            <Mail size={15} />
             <input
               placeholder="Email"
               className="input-chat"
@@ -96,20 +100,19 @@ const Intro = () => {
                 }
               }}
             />
-            <HelpCircle />
+            <HelpCircle size={15} />
           </div>
           <label
+            className="error-message"
             style={{
               visibility:
                 !emailValidate && regTxt.email !== "" ? "visible" : "hidden",
-              color: "red",
-              fontSize: 10,
             }}
           >
             Invalid email address
           </label>
           <div className="home-message-list-1">
-            <User2Icon />
+            <User2Icon size={15} />
             <input
               placeholder="User name"
               className="input-chat"
@@ -122,23 +125,21 @@ const Intro = () => {
                 }
               }}
             />
-            <HelpCircle />
+            <HelpCircle size={15} />
           </div>
           <label
+            className="error-message"
             style={{
               visibility:
                 !userNameValidate && regTxt.username !== ""
                   ? "visible"
                   : "hidden",
-              color: "red",
-              fontSize: 10,
             }}
           >
-            Username must be 3-16 characters and contain only letters, numbers,
-            or underscores
+            Use 3–16 letters / numbers
           </label>
           <div className="home-message-list-1">
-            <Lock />
+            <Lock size={15} />
             <input
               placeholder="New password"
               type={eye1 ? "text" : "password"}
@@ -158,24 +159,22 @@ const Intro = () => {
               }}
               style={{ cursor: "pointer" }}
             >
-              {eye1 ? <Eye /> : <EyeClosed />}
+              {eye1 ? <Eye size={15} /> : <EyeClosed size={15} />}
             </div>
           </div>
           <label
+            className="error-message"
             style={{
               visibility:
                 !npasswordValidate && regTxt.npassword !== ""
                   ? "visible"
                   : "hidden",
-              color: "red",
-              fontSize: 10,
             }}
           >
-            Password must be at least 8 characters long and include a letter and
-            a number
+            8+ chars, letter & number
           </label>
           <div className="home-message-list-1">
-            <Lock />
+            <Lock size={15} />
             <input
               placeholder="Confirm password"
               type={eye2 ? "text" : "password"}
@@ -195,21 +194,19 @@ const Intro = () => {
               }}
               style={{ cursor: "pointer" }}
             >
-              {eye2 ? <Eye /> : <EyeClosed />}
+              {eye2 ? <Eye size={15} /> : <EyeClosed size={15} />}
             </div>
           </div>
           <label
+            className="error-message"
             style={{
               visibility:
                 !cpasswordValidate && regTxt.cpassword !== ""
                   ? "visible"
                   : "hidden",
-              color: "red",
-              fontSize: 10,
             }}
           >
-            Password must be at least 8 characters long and include a letter and
-            a number
+           8+ chars, letter & number
           </label>
           <button
             className="intro-button"
@@ -226,14 +223,11 @@ const Intro = () => {
                     toastId = toast.loading("sign in...", {
                       style: { color: "purple" },
                     });
-                    const result = await axios.post(
-                      "http://localhost:4000/api/users/set",
-                      {
-                        username: regTxt.username,
-                        email: regTxt.email,
-                        password: regTxt.cpassword,
-                      }
-                    );
+                    const result = await axios.post(`${api_url}users/set`, {
+                      username: regTxt.username,
+                      email: regTxt.email,
+                      password: regTxt.cpassword,
+                    });
 
                     if (result.data.data) {
                       toast.update(toastId, {
@@ -303,11 +297,10 @@ const Intro = () => {
         <div
           className="intro-div-1"
           style={{ display: visibleLogScreen2 ? "none" : "flex" }}
-          // style={{ display: "flex" }}
         >
           <img src={Logo} className="intro-logo" alt="img" />
           <div className="home-message-list-1">
-            <User2Icon />
+            <User2Icon size={15} />
             <input
               placeholder="User name"
               className="input-chat"
@@ -316,7 +309,7 @@ const Intro = () => {
                 setLoginTxt((prev) => ({ ...prev, username: e.target.value }));
               }}
             />
-            <HelpCircle />
+            <HelpCircle size={15} />
           </div>
           <div className="home-message-list-1">
             <Lock />
@@ -335,7 +328,7 @@ const Intro = () => {
               }}
               style={{ cursor: "pointer" }}
             >
-              {eye3 ? <Eye /> : <EyeClosed />}
+              {eye3 ? <Eye size={15} /> : <EyeClosed size={15} />}
             </div>
           </div>
 
@@ -350,13 +343,10 @@ const Intro = () => {
                   loginTxt.username.length !== 0 &&
                   loginTxt.password.length !== 0
                 ) {
-                  const result = await axios.post(
-                    `http://localhost:4000/api/users/login`,
-                    {
-                      username: loginTxt.username,
-                      password: loginTxt.password,
-                    }
-                  );
+                  const result = await axios.post(`${api_url}users/login`, {
+                    username: loginTxt.username,
+                    password: loginTxt.password,
+                  });
                   if (result.data.success) {
                     toast.update(toastIds, {
                       render: "Login success!",
@@ -366,7 +356,6 @@ const Intro = () => {
                       icon: <FaCheckCircle color="purple" />,
                     });
                     setTimeout(() => {
-                      // navigate(`/home/7`);
                       navigate(`/home/${result.data.data.id}`);
                     }, 2500);
                   } else {
@@ -378,7 +367,7 @@ const Intro = () => {
                     });
                     navigate("/");
                   }
-                }else{
+                } else {
                   toast.update(toastIds, {
                     type: "error",
                     autoClose: 3000,

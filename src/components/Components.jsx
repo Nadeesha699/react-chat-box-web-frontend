@@ -5,9 +5,9 @@ export const EmptyMessageBody = () => {
   return (
     <div className="home-message-body-empty">
       <FaMessage size={100} color="#e3adf9" />
-      <label>Welcome to Chatterbox</label>
-      <p>Start a conversation by adding new friends!</p>
-      <p>Your chats will appear here once you start messaging.</p>
+      <label style={{color:"white"}}>Welcome to Chatterbox</label>
+      <p style={{color:"white"}}>Start a conversation by adding new friends!</p>
+      <p style={{color:"white"}}>Your chats will appear here once you start messaging.</p>
     </div>
   );
 };
@@ -19,3 +19,6 @@ export const LoadingScreen = () => {
     </div>
   );
 };
+
+export const api_url = "http://localhost:4000/api/"
+

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import chatJsonData from "../json/chatJsonData.json";
 import axios from "axios";
 import { useState } from "react";
+import { api_url } from "../components/Components";
 
 const ChatBody = () => {
   const { uid, chatid } = useParams();
@@ -18,16 +19,14 @@ const ChatBody = () => {
     const loadData = () => {
       axios
         .get(
-          `http://localhost:4000/api/message/get-all/by-conversation-id?id=${parseInt(
-            chatid
-          )}`
+          `${api_url}message/get-all/by-conversation-id?id=${parseInt(chatid)}`
         )
         .then((res) => {
           const messages = res.data.data;
           if (messages.length > 0) {
             axios
               .put(
-                `http://localhost:4000/api/message/update/by-conversation-id?id=${parseInt(
+                `${api_url}message/update/by-conversation-id?id=${parseInt(
                   chatid
                 )}`
               )
@@ -50,13 +49,11 @@ const ChatBody = () => {
   const sendMessage = () => {
     try {
       axios.put(
-        `http://localhost:4000/api/message/update/by-conversation-id?id=${parseInt(
-          chatid
-        )}`
+        `${api_url}message/update/by-conversation-id?id=${parseInt(chatid)}`
       );
 
       axios
-        .post(`http://localhost:4000/api/message/set`, {
+        .post(`${api_url}message/set`, {
           message: messageText,
           conversationId: parseInt(chatid),
           userid: parseInt(uid),
@@ -67,7 +64,7 @@ const ChatBody = () => {
 
           axios
             .get(
-              `http://localhost:4000/api/message/get-all/by-conversation-id?id=${parseInt(
+              `${api_url}message/get-all/by-conversation-id?id=${parseInt(
                 chatid
               )}`
             )
@@ -76,7 +73,7 @@ const ChatBody = () => {
               if (messages.length > 0) {
                 axios
                   .put(
-                    `http://localhost:4000/api/message/update/by-conversation-id?id=${parseInt(
+                    `${api_url}message/update/by-conversation-id?id=${parseInt(
                       chatid
                     )}`
                   )
@@ -103,9 +100,9 @@ const ChatBody = () => {
     <div className="home-message-body-mobile">
       <div className="home-message-body-1">
         <Link to={`/home/${uid}`}>
-          <ArrowLeftIcon />
+          <ArrowLeftIcon color="white" />
         </Link>
-        <label style={{ fontWeight: "bold" }}>{name}</label>
+        <label className="label-1">{name}</label>
       </div>
       <div className="home-message-card-1">
         {msgBodyEmpty
@@ -123,67 +120,38 @@ const ChatBody = () => {
                     }}
                   >
                     <div
+                      className="message-text-card"
                       style={{
                         backgroundColor:
                           e.userid === parseInt(uid) ? "#e3adf9" : "#cfcfcf",
-                        width: "20%",
-                        borderBottomLeftRadius: "20px",
-                        borderBottomRightRadius: "20px",
                         borderTopRightRadius:
                           e.userid === parseInt(uid) ? 0 : "20px",
                         borderTopLeftRadius:
                           e.userid === parseInt(uid) ? "20px" : 0,
-                        padding: "1%",
-                        display: "flex",
-                        flexDirection: "column",
                       }}
                     >
-                      <label style={{ fontSize: "12px" }}>{e.message}</label>
-                      <label
-                        style={{
-                          textAlign: "right",
-                          color: "gray",
-                          fontSize: "10px",
-                        }}
-                      >
-                        {timeAgo(e.creatAt)}
-                      </label>
+                      <label className="label-3">{e.message}</label>
+                      <label className="label-4">{timeAgo(e.creatAt)}</label>
                     </div>
                   </div>
                 );
               })}
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "5px",
-          backgroundColor: "#e3adf9",
-          padding: "1%",
-          borderRadius: "10px",
-        }}
-      >
+      <div className="home-container-2">
         <input
           value={messageText}
           onChange={(e) => {
             setMessageText(e.target.value);
           }}
           placeholder="Your message"
-          style={{
-            width: "100%",
-            borderStyle: "hidden",
-            backgroundColor: "transparent",
-            outline: "none",
-          }}
+          className="input-1"
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               sendMessage();
             }
           }}
         />
-        <Send onClick={sendMessage} />
+        <Send onClick={sendMessage}  color="white"/>
       </div>
     </div>
   );

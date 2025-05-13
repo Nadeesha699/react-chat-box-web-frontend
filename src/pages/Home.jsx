@@ -12,7 +12,11 @@ import {
   latestTime,
   unreadCount,
 } from "../services/services";
-import { EmptyMessageBody, LoadingScreen } from "../components/Components";
+import {
+  api_url,
+  EmptyMessageBody,
+  LoadingScreen,
+} from "../components/Components";
 
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
@@ -62,16 +66,14 @@ const Home = () => {
     try {
       const loadData = () => {
         axios
-          .get(
-            `http://localhost:4000/api/conversation/get-all/by-user-id?id=${uid}`
-          )
+          .get(`${api_url}conversation/get-all/by-user-id?id=${uid}`)
           .then((e) => {
             if (e.data.data.length !== 0) {
               setConversationData(e.data.data);
             }
           });
 
-        axios.get("http://localhost:4000/api/users/get-all").then((e) => {
+        axios.get(`${api_url}users/get-all`).then((e) => {
           setUsers(e.data.data);
         });
         setDataLoading(false);
@@ -140,7 +142,7 @@ const Home = () => {
       };
 
       axios.put(
-        `http://localhost:4000/api/message/update/by-conversation-id?id=${senderConId}`
+        `${api_url}message/update/by-conversation-id?id=${senderConId}`
       );
       setCounts((prev) => ({
         ...prev,
@@ -165,7 +167,7 @@ const Home = () => {
       }));
 
       axios
-        .post(`http://localhost:4000/api/message/set`, {
+        .post(`${api_url}message/set`, {
           message: messageText,
           conversationId: senderConId,
           userid: parseInt(uid),
@@ -185,28 +187,17 @@ const Home = () => {
       ) : (
         <>
           <div className="home-message-list">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
+            <div className="home-container-1">
               <div className="home-message-list-2">
-                <Search />
+                <Search  color="white"/>
                 <input
                   placeholder="search"
-                  style={{
-                    width: "100%",
-                    borderStyle: "hidden",
-                    backgroundColor: "transparent",
-                    outline: "none",
-                  }}
+                  className="input-1"
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
               <Edit
+              color="white"
                 onClick={() => {
                   visibleUserList
                     ? setVisibleUserList(false)
@@ -228,22 +219,28 @@ const Home = () => {
                       className="link-message-body"
                       to={
                         isMobileDisabled
-                          ?  `/chat-body/${uid}/${e.id}?senderName=${encodeURIComponent(e.senderuser.username)}`
-                            
+                          ? `/chat-body/${uid}/${
+                              e.id
+                            }?senderName=${encodeURIComponent(
+                              e.senderuser.username
+                            )}`
                           : "#"
                       }
                       key={index}
+                      onDoubleClick={()=>{
+                        
+                      }}
                       onClick={() => {
                         axios
                           .get(
-                            `http://localhost:4000/api/message/get-all/by-conversation-id?id=${e.id}`
+                            `${api_url}message/get-all/by-conversation-id?id=${e.id}`
                           )
                           .then((res) => {
                             const messages = res.data.data;
                             if (messages.length > 0) {
                               axios
                                 .put(
-                                  `http://localhost:4000/api/message/update/by-conversation-id?id=${e.id}`
+                                  `${api_url}message/update/by-conversation-id?id=${e.id}`
                                 )
                                 .catch((err) =>
                                   console.error(
@@ -282,15 +279,15 @@ const Home = () => {
                       }}
                     >
                       <div className="message-card" key={index}>
-                        <User size={"40"} />
+                        <User size={"40"} color="white"/>
                         <div className="message-card-1">
                           <div className="message-card-2">
                             {e.createrId === parseInt(uid) ? (
-                              <label style={{ fontWeight: "bold" }}>
+                              <label className="label-1">
                                 {e.senderuser.username}
                               </label>
                             ) : (
-                              <label style={{ fontWeight: "bold" }}>
+                              <label className="label-1">
                                 {e.createruser.username}
                               </label>
                             )}
@@ -300,14 +297,12 @@ const Home = () => {
                               <CheckCheck size={"20"} color="gray" />
                             )}
 
-                            <label style={{ color: "gray", fontSize: "10px" }}>
+                            <label className="label-2">
                               {timeAgo(times[e.id])}
                             </label>
                           </div>
                           <div className="message-card-2">
-                            <label style={{ color: "gray", fontSize: "12px" }}>
-                              {messages[e.id]}
-                            </label>
+                            <label className="label-2">{messages[e.id]}</label>
                             <label className="message-card-lbl">
                               {counts[e.id]}
                             </label>
@@ -324,7 +319,7 @@ const Home = () => {
           ) : (
             <div className="home-message-body">
               <div className="home-message-body-1">
-                <label style={{ fontWeight: "bold" }}>{senderName}</label>
+                <label className="label-1">{senderName}</label>
               </div>
               <div className="home-message-card-1">
                 {msgBodyEmpty
@@ -344,33 +339,20 @@ const Home = () => {
                             }}
                           >
                             <div
+                              className="message-text-card"
                               style={{
                                 backgroundColor:
                                   e.userid === parseInt(uid)
                                     ? "#e3adf9"
                                     : "#cfcfcf",
-                                width: "20%",
-                                borderBottomLeftRadius: "20px",
-                                borderBottomRightRadius: "20px",
                                 borderTopRightRadius:
                                   e.userid === parseInt(uid) ? 0 : "20px",
                                 borderTopLeftRadius:
                                   e.userid === parseInt(uid) ? "20px" : 0,
-                                padding: "1%",
-                                display: "flex",
-                                flexDirection: "column",
                               }}
                             >
-                              <label style={{ fontSize: "12px" }}>
-                                {e.message}
-                              </label>
-                              <label
-                                style={{
-                                  textAlign: "right",
-                                  color: "gray",
-                                  fontSize: "10px",
-                                }}
-                              >
+                              <label className="label-3">{e.message}</label>
+                              <label className="label-4">
                                 {timeAgo(e.creatAt)}
                               </label>
                             </div>
@@ -379,79 +361,41 @@ const Home = () => {
                       })}
                 <div ref={messagesEndRef} />
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "5px",
-                  backgroundColor: "#e3adf9",
-                  padding: "1%",
-                  borderRadius: "10px",
-                }}
-              >
+              <div className="home-container-2">
                 <input
                   value={messageText}
                   onChange={(e) => {
                     setMessageText(e.target.value);
                   }}
                   placeholder="Your message"
-                  style={{
-                    width: "100%",
-                    borderStyle: "hidden",
-                    backgroundColor: "transparent",
-                    outline: "none",
-                  }}
+                  className="input-1"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       sendMessage();
                     }
                   }}
                 />
-                <Send onClick={sendMessage} />
+                <Send onClick={sendMessage} color="white"/>
               </div>
             </div>
           )}
           <div
+            className="home-container-3"
             style={{
-              transition: "ease-in-out all 1s",
-              position: "fixed",
               top: visibleUserList ? "10%" : "-100%",
-              left: "15%",
-              backgroundColor: "white",
-              boxShadow: "10px 10px 10px black",
-              borderRadius: "20px",
-              padding: "1%",
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-              height: "300px",
             }}
           >
             <div className="home-message-list-1-1">
               <Search />
               <input
                 placeholder="search"
-                style={{
-                  width: "100%",
-                  borderStyle: "hidden",
-                  backgroundColor: "transparent",
-                  outline: "none",
-                }}
+                className="input-1"
                 onChange={(e) => {
                   setSearchText1(e.target.value);
                 }}
               />
             </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "5px",
-                overflow: "scroll",
-              }}
-            >
+            <div className="home-container-4">
               {users
                 .filter((e) =>
                   e.username.toLowerCase().includes(searchText1.toLowerCase())
@@ -461,11 +405,11 @@ const Home = () => {
                     <div
                       onClick={async () => {
                         const result1 = await axios.get(
-                          `http://localhost:4000/api/conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
+                          `${api_url}conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
                         );
                         if (result1.data.data[0]) {
                           const result3 = await axios.get(
-                            `http://localhost:4000/api/message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
+                            `${api_url}message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
                           );
                           if (result3.data.data.length !== 0) {
                             setChatData(result3.data.data);
@@ -491,7 +435,7 @@ const Home = () => {
                           }
                         } else {
                           const result2 = await axios.post(
-                            `http://localhost:4000/api/conversation/set`,
+                            `${api_url}conversation/set`,
                             {
                               createrId: parseInt(uid),
                               senderId: parseInt(e.id),
@@ -506,7 +450,7 @@ const Home = () => {
 
                             axios
                               .get(
-                                `http://localhost:4000/api/conversation/get-all/by-user-id?id=${uid}`
+                                `${api_url}conversation/get-all/by-user-id?id=${uid}`
                               )
                               .then((e) => {
                                 if (e.data.data.length !== 0) {
@@ -520,12 +464,7 @@ const Home = () => {
                         }
                       }}
                       key={index}
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        cursor: "pointer",
-                      }}
+                      className="home-container-5"
                     >
                       <User />
                       <label>{e.username}</label>
