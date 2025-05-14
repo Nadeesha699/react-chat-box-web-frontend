@@ -312,7 +312,7 @@ const Intro = () => {
             <HelpCircle size={15} />
           </div>
           <div className="home-message-list-1">
-            <Lock />
+            <Lock size={15}/>
             <input
               placeholder="Password"
               type={eye3 ? "text" : "password"}

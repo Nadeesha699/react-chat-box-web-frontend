@@ -266,6 +266,16 @@
   font-size: 10px;
 }
 
+.logout-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2%;
+  gap: 10%;
+  cursor: pointer;
+}
+
 .intro-container {
   height: 100vh;
   width: 100%;

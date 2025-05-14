@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CheckCheck, Edit, Search, Send, User } from "lucide-react";
+import { CheckCheck, Plus, Search, Send, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import conversationJsonData from "../json/conversationJsonData.json";
@@ -16,6 +16,7 @@ import {
   api_url,
   EmptyMessageBody,
   LoadingScreen,
+  Logout,
 } from "../components/Components";
 
 // https://dribbble.com/shots/23280048-Web-Chat-UI
@@ -189,15 +190,15 @@ const Home = () => {
           <div className="home-message-list">
             <div className="home-container-1">
               <div className="home-message-list-2">
-                <Search  color="white"/>
+                <Search color="white" />
                 <input
                   placeholder="search"
                   className="input-1"
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
-              <Edit
-              color="white"
+              <Plus
+                color="white"
                 onClick={() => {
                   visibleUserList
                     ? setVisibleUserList(false)
@@ -227,8 +228,8 @@ const Home = () => {
                           : "#"
                       }
                       key={index}
-                      onDoubleClick={()=>{
-                        
+                      onContextMenu={() => {
+                        alert("hello");
                       }}
                       onClick={() => {
                         axios
@@ -279,7 +280,7 @@ const Home = () => {
                       }}
                     >
                       <div className="message-card" key={index}>
-                        <User size={"40"} color="white"/>
+                        <User size={"40"} color="white" />
                         <div className="message-card-1">
                           <div className="message-card-2">
                             {e.createrId === parseInt(uid) ? (
@@ -313,6 +314,7 @@ const Home = () => {
                   );
                 })}
             </div>
+            <Logout />
           </div>
           {showChatSpace ? (
             <EmptyMessageBody />
@@ -375,7 +377,7 @@ const Home = () => {
                     }
                   }}
                 />
-                <Send onClick={sendMessage} color="white"/>
+                <Send onClick={sendMessage} color="white" />
               </div>
             </div>
           )}
