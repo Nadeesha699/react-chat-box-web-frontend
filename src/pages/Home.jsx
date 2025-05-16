@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CheckCheck, Plus, Search, Send, User } from "lucide-react";
+import { CheckCheck, Plus, Search, Send, Trash2Icon, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import conversationJsonData from "../json/conversationJsonData.json";
@@ -18,6 +18,7 @@ import {
   LoadingScreen,
   Logout,
 } from "../components/Components";
+import Swal from "sweetalert2";
 
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
@@ -40,6 +41,9 @@ const Home = () => {
   const [msgBodyEmpty, setMsgBodyEmpty] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [senderName, setSenderName] = useState("");
+  const [visibleTrash, setVisibleTrash] = useState(false);
+  const [changeDeleteColor, setChangeDeleteColor] = useState(false);
+  const [hoveredConversationId, setHoveredConversationId] = useState(null);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -217,6 +221,14 @@ const Home = () => {
                 .map((e, index) => {
                   return (
                     <Link
+                      onMouseEnter={() => {
+                        setVisibleTrash(true);
+                        setHoveredConversationId(e.id);
+                      }}
+                      onMouseLeave={() => {
+                        setVisibleTrash(false);
+                        setHoveredConversationId(null);
+                      }}
                       className="link-message-body"
                       to={
                         isMobileDisabled
@@ -228,9 +240,6 @@ const Home = () => {
                           : "#"
                       }
                       key={index}
-                      onContextMenu={() => {
-                        alert("hello");
-                      }}
                       onClick={() => {
                         axios
                           .get(
@@ -279,7 +288,17 @@ const Home = () => {
                           );
                       }}
                     >
-                      <div className="message-card" key={index}>
+                      <div
+                        className="message-card"
+                        key={index}
+                        style={{
+                          backgroundColor: changeDeleteColor
+                            ? e.id === hoveredConversationId
+                              ? "#ff000057"
+                              : "transparent"
+                            : "transparent",
+                        }}
+                      >
                         <User size={"40"} color="white" />
                         <div className="message-card-1">
                           <div className="message-card-2">
@@ -309,6 +328,58 @@ const Home = () => {
                             </label>
                           </div>
                         </div>
+                        <Trash2Icon
+                          onClick={() => {
+                            Swal.fire({
+                              background: "#00000089",
+                              title: "CHATTERBOX",
+                              text: "Do yo want to delete this conversation ? ",
+                              color: "white",
+                              showCancelButton: true,
+                              cancelButtonText: "no",
+                              confirmButtonText: "yes",
+                              cancelButtonColor: "purple",
+                              confirmButtonColor: "#ff0088",
+                            }).then(async (result) => {
+                              if (result.isConfirmed) {
+                                await axios.delete(
+                                  `${api_url}conversation/delete/by-id?id=${e.id}`
+                                );
+                                await axios
+                                  .get(
+                                    `${api_url}conversation/get-all/by-user-id?id=${uid}`
+                                  )
+                                  .then((e) => {
+                                    if (e.data.data.length !== 0) {
+                                      setConversationData(e.data.data);
+                                    }
+                                  });
+
+                                setShowChatSpace(true);
+                              }
+                            });
+                          }}
+                          onMouseEnter={() => {
+                            setChangeDeleteColor(true);
+                          }}
+                          onMouseLeave={() => {
+                            setChangeDeleteColor(false);
+                          }}
+                          color={
+                            changeDeleteColor
+                              ? e.id === hoveredConversationId
+                                ? "white"
+                                : "black"
+                              : "black"
+                          }
+                          style={{
+                            opacity: visibleTrash
+                              ? hoveredConversationId === e.id
+                                ? 1
+                                : 0
+                              : 0,
+                          }}
+                        />
                       </div>
                     </Link>
                   );
@@ -406,49 +477,47 @@ const Home = () => {
                   return (
                     <div
                       onClick={async () => {
-                        const result1 = await axios.get(
-                          `${api_url}conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
-                        );
-                        if (result1.data.data[0]) {
-                          const result3 = await axios.get(
-                            `${api_url}message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
+                        try {
+                          const result1 = await axios.get(
+                            `${api_url}conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
                           );
-                          if (result3.data.data.length !== 0) {
-                            setChatData(result3.data.data);
-                            setSenderConId(result1.data.data[0].id);
-                            setSenderName(
-                              result1.data.data[0].senderuser?.username
+                          if (result1.data.data[0]) {
+                            const result3 = await axios.get(
+                              `${api_url}message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
                             );
-                            console.log(
-                              result1.data.data[0].senderuser?.username
-                            );
-                            setShowChatSpace(false);
-                            setMsgBodyEmpty(false);
-                          } else {
-                            setSenderConId(result1.data.data[0].id);
-                            setSenderName(
-                              result1.data.data[0].senderuser?.username
-                            );
-                            console.log(
-                              result1.data.data[0].senderuser?.username
-                            );
-                            setShowChatSpace(false);
-                            setMsgBodyEmpty(true);
-                          }
-                        } else {
-                          const result2 = await axios.post(
-                            `${api_url}conversation/set`,
-                            {
-                              createrId: parseInt(uid),
-                              senderId: parseInt(e.id),
+                            if (result3.data.data.length !== 0) {
+                              setChatData(result3.data.data);
+                              setSenderConId(result1.data.data[0].id);
+                              setSenderName(
+                                result1.data.data[0].senderuser?.username || ""
+                              );
+                              setShowChatSpace(false);
+                              setMsgBodyEmpty(false);
+                            } else {
+                              setSenderConId(result1.data.data[0].id);
+                              setSenderName(
+                                result1.data.data[0].senderuser?.username || ""
+                              );
+                              setShowChatSpace(false);
+                              setMsgBodyEmpty(true);
                             }
-                          );
-
-                          if (result2.data.data) {
-                            setSenderConId(result2.data.data.id);
-                            setSenderName(
-                              result2.data.data.senderuser.username
+                          } else {
+                            const result2 = await axios.post(
+                              `${api_url}conversation/set`,
+                              {
+                                createrId: parseInt(uid),
+                                senderId: parseInt(e.id),
+                              }
                             );
+
+                            if (result2.data.data) {
+                              setSenderConId(result2.data.data.id);
+                              setSenderName(
+                                result2.data.data.senderuser.username || ""
+                              );
+                              setShowChatSpace(false);
+                              setMsgBodyEmpty(true);
+                            }
 
                             axios
                               .get(
@@ -459,11 +528,8 @@ const Home = () => {
                                   setConversationData(e.data.data);
                                 }
                               });
-
-                            setShowChatSpace(false);
-                            setMsgBodyEmpty(true);
                           }
-                        }
+                        } catch (error) {}
                       }}
                       key={index}
                       className="home-container-5"

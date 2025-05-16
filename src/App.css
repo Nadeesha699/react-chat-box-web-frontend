@@ -206,6 +206,7 @@
   padding: 2%;
   overflow: scroll;
   height: 73%;
+
   /* height: 80%; */
 }
 
@@ -237,12 +238,17 @@
   padding: 2%;
   gap: 2%;
   cursor: pointer;
+  align-items: center;
+  transition: opacity 1s ease, transform 1s ease;
+  border-radius: 10px;
 }
 
 .message-card-1 {
   display: flex;
   flex-direction: column;
   width: 100%;
+  color: #ff000057;
+  
 }
 
 .message-card-2 {
