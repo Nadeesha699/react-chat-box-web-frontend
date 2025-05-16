@@ -3,8 +3,9 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
-  animation: changeColor 30s ease-in-out infinite;
-  transition: background-color 2s ease-in-out;
+  /* animation: changeColor 30s ease-in-out infinite;
+  transition: background-color 2s ease-in-out; */
+  background-color: #c635ff;
 }
 
 @keyframes changeColor {
@@ -380,8 +381,9 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  animation: changeColor 30s ease-in-out infinite;
-  transition: background-color 2s ease-in-out;
+  /* animation: changeColor 30s ease-in-out infinite;
+  transition: background-color 2s ease-in-out; */
+  background-color: #c635ff;
 }
 @media (max-width: 575.98px) {
   .intro-card {

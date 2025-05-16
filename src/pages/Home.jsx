@@ -319,6 +319,7 @@ const Home = () => {
 
                             <label className="label-2">
                               {timeAgo(times[e.id])}
+                              {/* {times[e.id]} */}
                             </label>
                           </div>
                           <div className="message-card-2">
@@ -426,7 +427,7 @@ const Home = () => {
                             >
                               <label className="label-3">{e.message}</label>
                               <label className="label-4">
-                                {timeAgo(e.creatAt)}
+                                {timeAgo(e.createAt)}
                               </label>
                             </div>
                           </div>
@@ -477,59 +478,57 @@ const Home = () => {
                   return (
                     <div
                       onClick={async () => {
-                        try {
-                          const result1 = await axios.get(
-                            `${api_url}conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
+                        const result1 = await axios.get(
+                          `${api_url}conversation/get-all/by-user-id/for-verfiy?uid=${e.id}&fid=${uid}`
+                        );
+                        if (result1.data.data[0]) {
+                          const result2 = await axios.get(
+                            `${api_url}message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
                           );
-                          if (result1.data.data[0]) {
-                            const result3 = await axios.get(
-                              `${api_url}message/get-all/by-conversation-id?id=${result1.data.data[0].id}`
+                          if (result2.data.data[0]) {
+                            setChatData(result2.data.data);
+                            setSenderConId(result1.data.data[0].id);
+                            setSenderName(
+                              result1.data.data[0].senderuser.username
                             );
-                            if (result3.data.data.length !== 0) {
-                              setChatData(result3.data.data);
-                              setSenderConId(result1.data.data[0].id);
-                              setSenderName(
-                                result1.data.data[0].senderuser?.username || ""
-                              );
-                              setShowChatSpace(false);
-                              setMsgBodyEmpty(false);
-                            } else {
-                              setSenderConId(result1.data.data[0].id);
-                              setSenderName(
-                                result1.data.data[0].senderuser?.username || ""
-                              );
-                              setShowChatSpace(false);
-                              setMsgBodyEmpty(true);
-                            }
+                            setShowChatSpace(false);
+                            setMsgBodyEmpty(false);
                           } else {
-                            const result2 = await axios.post(
-                              `${api_url}conversation/set`,
-                              {
-                                createrId: parseInt(uid),
-                                senderId: parseInt(e.id),
-                              }
+                            setSenderConId(result1.data.data[0].id);
+                            setSenderName(
+                              result1.data.data[0].senderuser.username
                             );
-
-                            if (result2.data.data) {
-                              setSenderConId(result2.data.data.id);
-                              setSenderName(
-                                result2.data.data.senderuser.username || ""
-                              );
-                              setShowChatSpace(false);
-                              setMsgBodyEmpty(true);
-                            }
-
-                            axios
-                              .get(
-                                `${api_url}conversation/get-all/by-user-id?id=${uid}`
-                              )
-                              .then((e) => {
-                                if (e.data.data.length !== 0) {
-                                  setConversationData(e.data.data);
-                                }
-                              });
+                            setShowChatSpace(false);
+                            setMsgBodyEmpty(true);
                           }
-                        } catch (error) {}
+                        } else {
+                          const result3 = await axios.post(
+                            `${api_url}conversation/set`,
+                            {
+                              createrId: parseInt(uid),
+                              senderId: parseInt(e.id),
+                            }
+                          );
+
+                          if (result3.data.data) {
+                            setSenderConId(result3.data.data.id);
+                            setSenderName(
+                              result3.data.data.senderuser?.username
+                            );
+                            setShowChatSpace(false);
+                            setMsgBodyEmpty(true);
+                          }
+                        }
+
+                        axios
+                          .get(
+                            `${api_url}conversation/get-all/by-user-id?id=${uid}`
+                          )
+                          .then((e) => {
+                            if (e.data.data.length !== 0) {
+                              setConversationData(e.data.data);
+                            }
+                          });
                       }}
                       key={index}
                       className="home-container-5"
