@@ -9,7 +9,7 @@ import {
   EyeClosed,
 } from "lucide-react";
 import Logo from "../images/message.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -51,6 +51,10 @@ const Intro = () => {
   const [npasswordValidate, setNpasswordValidate] = useState(true);
   const [cpasswordValidate, setCpasswordValidate] = useState(true);
 
+  useEffect(() => {
+    document.title = "CHATTERBOX - login";
+  }, []);
+
   return (
     <div className="intro-container">
       <div className="intro-card">
@@ -71,6 +75,7 @@ const Intro = () => {
             <div
               className="intro-div-4"
               onClick={() => {
+                document.title = "CHATTERBOX - register";
                 setVisibleRegScreen1(false);
                 setVisibleRegScreen2(true);
                 setVisibleLogScreen1(false);
@@ -206,7 +211,7 @@ const Intro = () => {
                   : "hidden",
             }}
           >
-           8+ chars, letter & number
+            8+ chars, letter & number
           </label>
           <button
             className="intro-button"
@@ -284,6 +289,7 @@ const Intro = () => {
             <div
               className="intro-div-4"
               onClick={() => {
+                document.title = "CHATTERBOX - login";
                 setVisibleLogScreen1(true);
                 setVisibleLogScreen2(false);
                 setVisibleRegScreen1(true);
@@ -312,7 +318,7 @@ const Intro = () => {
             <HelpCircle size={15} />
           </div>
           <div className="home-message-list-1">
-            <Lock size={15}/>
+            <Lock size={15} />
             <input
               placeholder="Password"
               type={eye3 ? "text" : "password"}

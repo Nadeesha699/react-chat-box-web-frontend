@@ -69,6 +69,7 @@ const Home = () => {
 
   useEffect(() => {
     try {
+      document.title = "CHATTERBOX - converstion"
       const loadData = () => {
         axios
           .get(`${api_url}conversation/get-all/by-user-id?id=${uid}`)
@@ -241,6 +242,7 @@ const Home = () => {
                       }
                       key={index}
                       onClick={() => {
+                        document.title = "CHATTERBOX - chat"
                         axios
                           .get(
                             `${api_url}message/get-all/by-conversation-id?id=${e.id}`
@@ -529,6 +531,8 @@ const Home = () => {
                               setConversationData(e.data.data);
                             }
                           });
+
+                          document.title = "CHATTERBOX - chat"
                       }}
                       key={index}
                       className="home-container-5"
