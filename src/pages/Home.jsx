@@ -2,11 +2,12 @@ import axios from "axios";
 import {
   CheckCheck,
   Edit,
-  Plus,
+  Pen,
   Search,
   Send,
   Trash2Icon,
   User,
+  UserCircleIcon,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -222,6 +223,26 @@ const Home = () => {
       ) : (
         <>
           <div className="home-message-list">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <UserCircleIcon
+                size={40}
+                color="white"
+                style={{ cursor: "pointer" }}
+              />
+              <label
+                style={{ color: "white", fontWeight: "bold", fontSize: "30px" }}
+              >
+                Chat
+              </label>
+              {/* <Logout /> */}
+            </div>
             <div className="home-container-1">
               <div className="home-message-list-2">
                 <Search color="white" />
@@ -231,7 +252,7 @@ const Home = () => {
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
-              <Plus
+              <Edit
                 color="white"
                 onClick={() => {
                   visibleUserList
@@ -416,7 +437,6 @@ const Home = () => {
                   );
                 })}
             </div>
-            <Logout />
           </div>
           {showChatSpace ? (
             <EmptyMessageBody />
@@ -648,9 +668,11 @@ const Home = () => {
           <div
             className="home-container-3"
             style={{
-              top: visibleUserList ? "10%" : "-100%",
+              top: visibleUserList ? "20%" : "-100%",
             }}
           >
+            {" "}
+            <label style={{ fontWeight: "bold" }}>New Chat</label>{" "}
             <div className="home-message-list-1-1">
               <Search />
               <input
@@ -663,8 +685,12 @@ const Home = () => {
             </div>
             <div className="home-container-4">
               {users
-                .filter((e) =>
-                  e.username.toLowerCase().includes(searchText1.toLowerCase())
+                .filter(
+                  (e) =>
+                    e.username
+                      .toLowerCase()
+                      .includes(searchText1.toLowerCase()) &&
+                    e.id !== Number(uid)
                 )
                 .map((e, index) => {
                   return (
@@ -736,6 +762,11 @@ const Home = () => {
           </div>
         </>
       )}
+      <div style={{position:"fixed",top:"10%",left:"20%",backgroundColor:"yellow",width:"300px",height:"400px"}}>
+<User/>
+<input value={"Nadeesha"}/><Pen/>
+<Logout/>
+      </div>
     </div>
   );
 };

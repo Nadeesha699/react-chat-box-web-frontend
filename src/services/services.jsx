@@ -1,9 +1,10 @@
 import axios from "axios";
+import { api_url } from "../components/Components";
 
 export const latestMessage = async (a) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
+      `${api_url}message/get-all/by-conversation-id?id=${a}`
     );
     const data = response.data.data;
     return data ? data[data.length - 1]?.message : "No message found";
@@ -13,7 +14,7 @@ export const latestMessage = async (a) => {
 export const latestTime = async (a) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
+      `${api_url}message/get-all/by-conversation-id?id=${a}`
     );
     const data = response.data.data;
     return data ? data[data.length - 1]?.createAt : "N/A";
@@ -23,7 +24,7 @@ export const latestTime = async (a) => {
 export const latestRead = async (a) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/message/get-all/by-conversation-id?id=${a}`
+      `${api_url}message/get-all/by-conversation-id?id=${a}`
     );
     const data = response.data.data;
     return data ? data[data.length - 1]?.read : false;
@@ -33,7 +34,7 @@ export const latestRead = async (a) => {
 export const unreadCount = async (a) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/message/get-all/unread-messages/by-conversation-id?id=${a}`
+      `${api_url}message/get-all/unread-messages/by-conversation-id?id=${a}`
     );
     const data = response.data.data;
     return data ? data : 0;
