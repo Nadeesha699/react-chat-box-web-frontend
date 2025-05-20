@@ -1,5 +1,13 @@
 import axios from "axios";
-import { CheckCheck, Plus, Search, Send, Trash2Icon, User } from "lucide-react";
+import {
+  CheckCheck,
+  Edit,
+  Plus,
+  Search,
+  Send,
+  Trash2Icon,
+  User,
+} from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import conversationJsonData from "../json/conversationJsonData.json";
@@ -44,6 +52,9 @@ const Home = () => {
   const [visibleTrash, setVisibleTrash] = useState(false);
   const [changeDeleteColor, setChangeDeleteColor] = useState(false);
   const [hoveredConversationId, setHoveredConversationId] = useState(null);
+  const [visibleMessageTrashAndEdit, setVisibleMessageTrashAndEdit] =
+    useState(false);
+  const [hoveredMessageId, setHoveredMessageId] = useState(null);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -69,7 +80,7 @@ const Home = () => {
 
   useEffect(() => {
     try {
-      document.title = "CHATTERBOX - converstion"
+      document.title = "CHATTERBOX - converstion";
       const loadData = () => {
         axios
           .get(`${api_url}conversation/get-all/by-user-id?id=${uid}`)
@@ -242,7 +253,7 @@ const Home = () => {
                       }
                       key={index}
                       onClick={() => {
-                        document.title = "CHATTERBOX - chat"
+                        document.title = "CHATTERBOX - chat";
                         axios
                           .get(
                             `${api_url}message/get-all/by-conversation-id?id=${e.id}`
@@ -415,6 +426,13 @@ const Home = () => {
                             }}
                           >
                             <div
+                              onMouseEnter={() => {
+                                setHoveredMessageId(e.id);
+                                setVisibleMessageTrashAndEdit(true);
+                              }}
+                              onMouseLeave={() => {
+                                setVisibleMessageTrashAndEdit(false);
+                              }}
                               className="message-text-card"
                               style={{
                                 backgroundColor:
@@ -431,6 +449,40 @@ const Home = () => {
                               <label className="label-4">
                                 {timeAgo(e.createAt)}
                               </label>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "flex-end",
+                                }}
+                              >
+                                <Edit
+                                  size={15}
+                                  style={{
+                                    opacity: visibleMessageTrashAndEdit
+                                      ? hoveredMessageId === e.id
+                                        ? 1
+                                        : 0
+                                      : 0,
+                                  }}
+                                  onClick={() => {}}
+                                />
+                                <Trash2Icon
+                                  size={15}
+                                  style={{
+                                    opacity: visibleMessageTrashAndEdit
+                                      ? hoveredMessageId === e.id
+                                        ? 1
+                                        : 0
+                                      : 0,
+                                  }}
+                                  onClick={async () => {
+                                   await axios.delete(`${api_url}message/delete/by-id?id=${e.id}`)
+
+                                   
+
+                                  }}
+                                />
+                              </div>
                             </div>
                           </div>
                         );
@@ -532,7 +584,7 @@ const Home = () => {
                             }
                           });
 
-                          document.title = "CHATTERBOX - chat"
+                        document.title = "CHATTERBOX - chat";
                       }}
                       key={index}
                       className="home-container-5"
