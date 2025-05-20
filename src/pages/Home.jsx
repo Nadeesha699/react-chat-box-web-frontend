@@ -55,6 +55,12 @@ const Home = () => {
   const [visibleMessageTrashAndEdit, setVisibleMessageTrashAndEdit] =
     useState(false);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
+  const [editChangeMessageBackground, setEditChangeMessageBackground] =
+    useState(false);
+  const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
+    useState(false);
+  // const [messageEditEnable, setMessageEditEnable] = useState(true);
+  // const [editMessage,setEditMessage] = useState("");
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -189,7 +195,19 @@ const Home = () => {
           conversationId: senderConId,
           userid: parseInt(uid),
         })
-        .then((e) => {
+        .then(async (e) => {
+          const result1 = await axios.get(
+            `${api_url}message/get-all/by-conversation-id?id=${senderConId}`
+          );
+
+          const messages = result1.data.data;
+
+          await axios.put(
+            `${api_url}message/update/by-conversation-id?id=${senderConId}`
+          );
+
+          setChatData(messages);
+
           setShowChatSpace(false);
           setMsgBodyEmpty(false);
           setMessageText("");
@@ -332,7 +350,6 @@ const Home = () => {
 
                             <label className="label-2">
                               {timeAgo(times[e.id])}
-                              {/* {times[e.id]} */}
                             </label>
                           </div>
                           <div className="message-card-2">
@@ -436,7 +453,13 @@ const Home = () => {
                               className="message-text-card"
                               style={{
                                 backgroundColor:
-                                  e.userid === parseInt(uid)
+                                  deleteChangeMessageBackground &&
+                                  hoveredMessageId === e.id
+                                    ? "#ff000057"
+                                    : editChangeMessageBackground &&
+                                      hoveredMessageId === e.id
+                                    ? "#00ff00ab"
+                                    : e.userid === parseInt(uid)
                                     ? "#e3adf9"
                                     : "#cfcfcf",
                                 borderTopRightRadius:
@@ -463,8 +486,75 @@ const Home = () => {
                                         ? 1
                                         : 0
                                       : 0,
+                                    cursor: "pointer",
                                   }}
-                                  onClick={() => {}}
+                                  onMouseEnter={() => {
+                                    setEditChangeMessageBackground(true);
+                                  }}
+                                  onMouseLeave={() => {
+                                    setEditChangeMessageBackground(false);
+                                  }}
+                                  onClick={() => {
+                                    Swal.fire({
+                                      background: "#00000089",
+                                      title: "CHATTERBOX",
+                                      text: "Do you want to edit this message ?",
+                                      color: "white",
+                                      showCancelButton: true,
+                                      cancelButtonText: "cancel",
+                                      confirmButtonText: "edit",
+                                      cancelButtonColor: "purple",
+                                      confirmButtonColor: "#ff0088",
+                                      input: "text",
+                                      inputPlaceholder: e.message,
+                                    }).then(async (result) => {
+                                      if (
+                                        result.isConfirmed &&
+                                        result.value !== null
+                                      ) {
+                                        const result2 = await axios.put(
+                                          `${api_url}message/update/by-id?id=${e.id}`,
+                                          {
+                                            message: result.value,
+                                          }
+                                        );
+                                        if (result2.data.data) {
+                                          const result1 = await axios.get(
+                                            `${api_url}message/get-all/by-conversation-id?id=${e.conversationId}`
+                                          );
+
+                                          const messages = result1.data.data;
+
+                                          await axios.put(
+                                            `${api_url}message/update/by-conversation-id?id=${e.conversationId}`
+                                          );
+
+                                          setCounts((prev) => ({
+                                            ...prev,
+                                            [e.conversationId]: 0,
+                                          }));
+
+                                          setReads((prev) => ({
+                                            ...prev,
+                                            [e.conversationId]: true,
+                                          }));
+
+                                          setMessages((prev) => ({
+                                            ...prev,
+                                            [e.conversationId]:
+                                              messages[messages.length - 1]
+                                                .message,
+                                          }));
+
+                                          setChatData(messages);
+
+                                          setSenderConId(
+                                            messages[0].conversationId
+                                          );
+                                        }
+                                      }
+                                    });
+                                  }}
                                 />
                                 <Trash2Icon
                                   size={15}
@@ -474,12 +564,60 @@ const Home = () => {
                                         ? 1
                                         : 0
                                       : 0,
+                                    cursor: "pointer",
+                                  }}
+                                  onMouseEnter={() => {
+                                    setDeleteChangeMessageBackground(true);
+                                  }}
+                                  onMouseLeave={() => {
+                                    setDeleteChangeMessageBackground(false);
                                   }}
                                   onClick={async () => {
-                                   await axios.delete(`${api_url}message/delete/by-id?id=${e.id}`)
+                                    await axios.delete(
+                                      `${api_url}message/delete/by-id?id=${e.id}`
+                                    );
 
-                                   
+                                    const result1 = await axios.get(
+                                      `${api_url}message/get-all/by-conversation-id?id=${e.conversationId}`
+                                    );
+                                    console.log(result1.data.data);
 
+                                    const messages = result1.data.data;
+
+                                    if (messages.length > 0) {
+                                      await axios.put(
+                                        `${api_url}message/update/by-conversation-id?id=${e.conversationId}`
+                                      );
+
+                                      setCounts((prev) => ({
+                                        ...prev,
+                                        [e.conversationId]: 0,
+                                      }));
+
+                                      setReads((prev) => ({
+                                        ...prev,
+                                        [e.conversationId]: true,
+                                      }));
+
+                                      setMessages((prev) => ({
+                                        ...prev,
+                                        [e.conversationId]:
+                                          messages[messages.length - 1].message,
+                                      }));
+
+                                      setChatData(messages);
+
+                                      setSenderConId(
+                                        messages[0].conversationId
+                                      );
+                                      setShowChatSpace(false);
+
+                                      setMsgBodyEmpty(false);
+                                    } else {
+                                      setSenderConId(e.id);
+                                      setShowChatSpace(false);
+                                      setMsgBodyEmpty(true);
+                                    }
                                   }}
                                 />
                               </div>
