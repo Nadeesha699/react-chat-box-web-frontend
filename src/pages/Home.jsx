@@ -68,6 +68,9 @@ const Home = () => {
     npass: "",
     copass: "",
   });
+  const [pen1, setPen1] = useState(false);
+  const [pen2, setPen2] = useState(false);
+  const [visibleUserUpdatePanel, setVisibleUserUpdatePanel] = useState(false);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -247,7 +250,7 @@ const Home = () => {
                   );
                   if (result.data.data) {
                     setUserData(result.data.data);
-                    console.log(userData);
+                    setVisibleUserUpdatePanel(!visibleUserUpdatePanel);
                   }
                 }}
               />
@@ -615,7 +618,6 @@ const Home = () => {
                                     const result1 = await axios.get(
                                       `${api_url}message/get-all/by-conversation-id?id=${e.conversationId}`
                                     );
-                                    console.log(result1.data.data);
 
                                     const messages = result1.data.data;
 
@@ -780,7 +782,7 @@ const Home = () => {
       <div
         style={{
           position: "fixed",
-          top: "10%",
+          top: visibleUserUpdatePanel ? "10%" : "-100%",
           left: "20%",
           backgroundColor: "white",
           width: "auto",
@@ -789,11 +791,13 @@ const Home = () => {
           flexDirection: "column",
           justifyContent: "flex-start",
           padding: "2%",
-          gap: "5px",
-          borderRadius: "2%",
+          gap: "10px",
+          borderRadius: "10px",
+          boxShadow: "10px 10px 10px black",
+          transition:"all 1s ease-in-out"
         }}
       >
-        <label style={{ fontWeight: "bold" }}>Profile</label>
+        <label style={{ fontWeight: "bold", fontSize: "30px" }}>Profile</label>
         <UserCircleIcon size={60} />
         <div
           style={{
@@ -804,14 +808,20 @@ const Home = () => {
           }}
         >
           <input
+            disabled={!pen1}
+            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
             value={userData.username}
             onChange={(e) => {
               setUserData((prev) => ({ ...prev, username: e.target.value }));
             }}
           />
-          <Pen size={15} />
+          <Pen
+            onClick={() => {
+              setPen1(!pen1);
+            }}
+          />
         </div>
-        <label>Email</label>
+        <label style={{ fontWeight: "bold" }}>Email </label>
         <div
           style={{
             display: "flex",
@@ -821,14 +831,20 @@ const Home = () => {
           }}
         >
           <input
+            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
             value={userData.email}
+            disabled={!pen2}
             onChange={(e) => {
               setUserData((prev) => ({ ...prev, email: e.target.value }));
             }}
           />
-          <Pen size={15} />
+          <Pen
+            onClick={() => {
+              setPen2(!pen2);
+            }}
+          />
         </div>
-        <label>Current Password</label>
+        <label style={{ fontWeight: "bold" }}>Current Password</label>
         <div
           style={{
             display: "flex",
@@ -838,14 +854,14 @@ const Home = () => {
           }}
         >
           <input
+            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
             value={passwordArray.cupass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, cupass: e.target.value }));
             }}
           />
-          <Pen size={15} />
         </div>
-        <label>New Password</label>
+        <label style={{ fontWeight: "bold" }}>New Password</label>
         <div
           style={{
             display: "flex",
@@ -855,14 +871,14 @@ const Home = () => {
           }}
         >
           <input
+            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
             value={passwordArray.npass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, npass: e.target.value }));
             }}
           />
-          <Pen size={15} />
         </div>
-        <label>Confirm Password</label>
+        <label style={{ fontWeight: "bold" }}>Confirm Password</label>
         <div
           style={{
             display: "flex",
@@ -872,12 +888,12 @@ const Home = () => {
           }}
         >
           <input
+            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
             value={passwordArray.copass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, copass: e.target.value }));
             }}
           />
-          <Pen size={15} />
         </div>
         <div
           className="logout-container"
@@ -906,10 +922,9 @@ const Home = () => {
                     }
                   );
 
-                  if(result.data){
-                     alert("update success")
-                  }else{
-
+                  if (result.data) {
+                    alert("update success");
+                  } else {
                   }
                 }
               }
