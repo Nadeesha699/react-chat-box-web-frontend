@@ -14,6 +14,7 @@ import { Link, useParams } from "react-router-dom";
 import conversationJsonData from "../json/conversationJsonData.json";
 import chatJsonData from "../json/chatJsonData.json";
 import userJsonData from "../json/userJsonData.json";
+import userSinlgeJsonData from "../json/userSingleJsonData.json";
 import { timeAgo } from "../utils/utils";
 import {
   latestMessage,
@@ -60,8 +61,12 @@ const Home = () => {
     useState(false);
   const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
     useState(false);
-  // const [messageEditEnable, setMessageEditEnable] = useState(true);
-  // const [editMessage,setEditMessage] = useState("");
+  const [userData, setUserData] = useState(userSinlgeJsonData);
+  const [passwordArray, setPasswordArray] = useState({
+    cupass: "",
+    npass: "",
+    copass: "",
+  });
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -215,7 +220,6 @@ const Home = () => {
         });
     } catch (error) {}
   };
-
   return (
     <div className="home-container">
       {dataLoading ? (
@@ -235,6 +239,15 @@ const Home = () => {
                 size={40}
                 color="white"
                 style={{ cursor: "pointer" }}
+                onClick={async () => {
+                  const result = await axios.get(
+                    `${api_url}users/get-user/by-id?id=${Number(uid)}`
+                  );
+                  if (result.data.data) {
+                    setUserData(result.data.data);
+                    console.log(userData);
+                  }
+                }}
               />
               <label
                 style={{ color: "white", fontWeight: "bold", fontSize: "30px" }}
@@ -762,10 +775,84 @@ const Home = () => {
           </div>
         </>
       )}
-      <div style={{position:"fixed",top:"10%",left:"20%",backgroundColor:"yellow",width:"300px",height:"400px"}}>
-<User/>
-<input value={"Nadeesha"}/><Pen/>
-<Logout/>
+      <div
+        style={{
+          position: "fixed",
+          top: "10%",
+          left: "20%",
+          backgroundColor: "white",
+          width: "auto",
+          height: "auto",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          padding: "2%",
+          gap: "5px",
+          borderRadius: "2%",
+        }}
+      >
+        <label style={{ fontWeight: "bold" }}>Profile</label>
+        <UserCircleIcon size={60} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <input value={userData.username} />
+          <Pen size={15} />
+        </div>
+        <label>Email</label>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <input value={userData.email} />
+          <Pen size={15} />
+        </div>
+        <label>Current Password</label>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <input value={passwordArray.cupass} />
+          <Pen size={15} />
+        </div>
+        <label>New Password</label>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <input value={passwordArray.npass} />
+          <Pen size={15} />
+        </div>
+        <label>Confirm Password</label>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <input value={passwordArray.copass} />
+          <Pen size={15} />
+        </div>
+        <Logout />
       </div>
     </div>
   );

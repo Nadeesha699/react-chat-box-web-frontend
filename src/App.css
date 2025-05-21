@@ -276,13 +276,12 @@
 .logout-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
   padding: 2%;
   gap: 10%;
-  width: 100%;
+  width: 50%;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 5px;
   transition: all 0.5s ease-in-out;
 }
 

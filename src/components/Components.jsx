@@ -2,9 +2,7 @@ import { FaMessage } from "react-icons/fa6";
 import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import {  LogOut } from "lucide-react";
-
-
+import { LogOut } from "lucide-react";
 
 export const EmptyMessageBody = () => {
   return (
@@ -30,7 +28,7 @@ export const LoadingScreen = () => {
 };
 
 export const Logout = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div
       className="logout-container"
@@ -49,8 +47,14 @@ export const Logout = () => {
         });
       }}
     >
-      <LogOut color="white" />
-      <label className="label-1">logout</label>
+      <LogOut />
+      <label
+        style={{
+          fontWeight: "bold"
+        }}
+      >
+        logout
+      </label>
     </div>
   );
 };
