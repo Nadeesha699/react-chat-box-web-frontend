@@ -3,6 +3,7 @@ import {
   CheckCheck,
   Edit,
   Pen,
+  Save,
   Search,
   Send,
   Trash2Icon,
@@ -241,7 +242,8 @@ const Home = () => {
                 style={{ cursor: "pointer" }}
                 onClick={async () => {
                   const result = await axios.get(
-                    `${api_url}users/get-user/by-id?id=${Number(uid)}`
+                    // `${api_url}users/get-user/by-id?id=${Number(uid)}`
+                    `${api_url}users/get-user/by-id?id=22`
                   );
                   if (result.data.data) {
                     setUserData(result.data.data);
@@ -254,7 +256,6 @@ const Home = () => {
               >
                 Chat
               </label>
-              {/* <Logout /> */}
             </div>
             <div className="home-container-1">
               <div className="home-message-list-2">
@@ -262,6 +263,7 @@ const Home = () => {
                 <input
                   placeholder="search"
                   className="input-1"
+                  value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
@@ -278,7 +280,7 @@ const Home = () => {
             <div className="scroll-container">
               {conversationData
                 .filter((e) =>
-                  e.createruser?.username
+                  e.senderuser.username
                     .toLowerCase()
                     .includes(searchText.toLowerCase())
                 )
@@ -801,7 +803,12 @@ const Home = () => {
             gap: "10px",
           }}
         >
-          <input value={userData.username} />
+          <input
+            value={userData.username}
+            onChange={(e) => {
+              setUserData((prev) => ({ ...prev, username: e.target.value }));
+            }}
+          />
           <Pen size={15} />
         </div>
         <label>Email</label>
@@ -813,7 +820,12 @@ const Home = () => {
             gap: "10px",
           }}
         >
-          <input value={userData.email} />
+          <input
+            value={userData.email}
+            onChange={(e) => {
+              setUserData((prev) => ({ ...prev, email: e.target.value }));
+            }}
+          />
           <Pen size={15} />
         </div>
         <label>Current Password</label>
@@ -825,7 +837,12 @@ const Home = () => {
             gap: "10px",
           }}
         >
-          <input value={passwordArray.cupass} />
+          <input
+            value={passwordArray.cupass}
+            onChange={(e) => {
+              setPasswordArray((prev) => ({ ...prev, cupass: e.target.value }));
+            }}
+          />
           <Pen size={15} />
         </div>
         <label>New Password</label>
@@ -837,7 +854,12 @@ const Home = () => {
             gap: "10px",
           }}
         >
-          <input value={passwordArray.npass} />
+          <input
+            value={passwordArray.npass}
+            onChange={(e) => {
+              setPasswordArray((prev) => ({ ...prev, npass: e.target.value }));
+            }}
+          />
           <Pen size={15} />
         </div>
         <label>Confirm Password</label>
@@ -849,8 +871,59 @@ const Home = () => {
             gap: "10px",
           }}
         >
-          <input value={passwordArray.copass} />
+          <input
+            value={passwordArray.copass}
+            onChange={(e) => {
+              setPasswordArray((prev) => ({ ...prev, copass: e.target.value }));
+            }}
+          />
           <Pen size={15} />
+        </div>
+        <div
+          className="logout-container"
+          onClick={async () => {
+            try {
+              if (userData.email !== null && userData.username !== null) {
+                const valid = await axios.post(
+                  `${api_url}users/password-verify/by-id?id=22`,
+                  {
+                    password: passwordArray.cupass,
+                  }
+                );
+                if (
+                  passwordArray.npass !== null &&
+                  passwordArray.copass !== null &&
+                  passwordArray.cupass !== null &&
+                  valid.data.success &&
+                  passwordArray.npass === passwordArray.copass
+                ) {
+                  const result = await axios.put(
+                    `${api_url}users/update/by-id?id=22`,
+                    {
+                      username: userData.username,
+                      email: userData.email,
+                      password: passwordArray.copass,
+                    }
+                  );
+
+                  if(result.data){
+                     alert("update success")
+                  }else{
+
+                  }
+                }
+              }
+            } catch (error) {}
+          }}
+        >
+          <Save />
+          <label
+            style={{
+              fontWeight: "bold",
+            }}
+          >
+            update
+          </label>
         </div>
         <Logout />
       </div>

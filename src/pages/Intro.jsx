@@ -225,7 +225,7 @@ const Intro = () => {
                   isUserName(regTxt.username)
                 ) {
                   if (passwordMatch(regTxt.npassword, regTxt.cpassword)) {
-                    toastId = toast.loading("sign in...", {
+                    toastId = toast.loading("sign up...", {
                       style: { color: "purple" },
                     });
                     const result = await axios.post(`${api_url}users/set`, {
