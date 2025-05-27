@@ -8,26 +8,6 @@
   background-color: #c635ff;
 }
 
-@keyframes changeColor {
-  0% {
-    background-color: #fcb45c;
-  }
-  20% {
-    background-color: #2d8b93;
-  }
-  40% {
-    background-color: #ff5b79;
-  }
-  60% {
-    background-color: #c635ff;
-  }
-  80% {
-    background-color: #ffb65d;
-  }
-  100% {
-    background-color: #fcb45c;
-  }
-}
 
 .home-container-1 {
   display: flex;
@@ -48,8 +28,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #e3adf9;
-  padding: 1%;
+  background-color: #c2daf7;
+  padding: 10px;
   border-radius: 10px;
 }
 
@@ -116,7 +96,7 @@
   width: 20%;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  padding: 1%;
+  padding: 15px;
   display: flex;
   flex-direction: column;
 }
@@ -397,9 +377,7 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  /* animation: changeColor 30s ease-in-out infinite;
-  transition: background-color 2s ease-in-out; */
-  background-color: #c635ff;
+  background: linear-gradient(to right, #29a6ff, #84ccff, #dff2ff,#0262a8);
 }
 @media (max-width: 575.98px) {
   .intro-card {

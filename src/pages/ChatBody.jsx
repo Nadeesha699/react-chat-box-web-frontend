@@ -6,6 +6,8 @@ import chatJsonData from "../json/chatJsonData.json";
 import axios from "axios";
 import { useState } from "react";
 import { api_url } from "../components/Components";
+import { iconColor } from "../utils/utils";
+import { messageCard } from "../utils/utils";
 
 const ChatBody = () => {
   const { uid, chatid } = useParams();
@@ -42,7 +44,7 @@ const ChatBody = () => {
         .catch((err) =>
           console.error("GET error:", err.response?.data || err.message)
         );
-    };
+  };
     loadData();
   }, [chatid]);
 
@@ -116,22 +118,30 @@ const ChatBody = () => {
                     style={{
                       display: "flex",
                       justifyContent:
-                        e.userid === parseInt(uid) ? "flex-end" : "flex-start",
+                        e.userid === parseInt(uid)
+                          ? messageCard.senderPostion
+                          : messageCard.recieverPostion,
                     }}
                   >
                     <div
                       className="message-text-card"
                       style={{
                         backgroundColor:
-                          e.userid === parseInt(uid) ? "#e3adf9" : "#cfcfcf",
+                          e.userid === parseInt(uid)
+                            ? messageCard.senderColor
+                            : messageCard.recieverColor,
                         borderTopRightRadius:
-                          e.userid === parseInt(uid) ? 0 : "20px",
+                          e.userid === parseInt(uid)
+                            ? messageCard.num1
+                            : messageCard.num2,
                         borderTopLeftRadius:
-                          e.userid === parseInt(uid) ? "20px" : 0,
+                          e.userid === parseInt(uid)
+                            ? messageCard.num2
+                            : messageCard.num1,
                       }}
                     >
                       <label className="label-3">{e.message}</label>
-                      <label className="label-4">{timeAgo(e.creatAt)}</label>
+                      <label className="label-4">{timeAgo(e.createAt)}</label>
                     </div>
                   </div>
                 );
@@ -151,7 +161,7 @@ const ChatBody = () => {
             }
           }}
         />
-        <Send onClick={sendMessage}  color="white"/>
+        <Send onClick={sendMessage} color={iconColor} />
       </div>
     </div>
   );
