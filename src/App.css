@@ -39,6 +39,7 @@
 .error-message {
   color: red;
   font-size: 10px;
+  text-align: center;
 }
 
 .home-container-2 {
@@ -135,7 +136,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #e3adf9;
+  background-color: #c2daf7;
   padding: 2%;
   border-radius: 10px;
   width: 50%;
@@ -147,7 +148,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #e3adf9;
+  background-color: #c2daf7;
   padding: 2%;
   border-radius: 10px;
   width: 100%;
@@ -249,7 +250,6 @@
   flex-direction: column;
   width: 100%;
   color: #ff000057;
-  
 }
 
 .message-card-2 {
@@ -285,7 +285,7 @@
   transition: all 0.5s ease-in-out;
 }
 
-.logout-container:hover{
+.logout-container:hover {
   background-color: rgba(0, 0, 0, 0.407);
 }
 
@@ -296,7 +296,7 @@
   justify-content: center;
   align-items: center;
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url(./images/background.png);
+    url(https://cdn.dribbble.com/userupload/27435546/file/original-d6d21e1c4966b81b9f3f98dadaa1c906.gif);
   background-size: cover;
   background-position: center;
 }
@@ -313,17 +313,24 @@
   width: 50%;
   /* display: flex; */
   flex-direction: column;
-  justify-content: space-evenly;
   align-items: center;
+}
+
+.intro-div-1-1 {
+  display: flex;
+  height: 70%;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .intro-div-2 {
   width: 50%;
   height: 100%;
-  /* display: flex; */
   justify-content: center;
   align-items: center;
-  background-image: url(./images/1.png);
+  background-image: url(https://cdn.dribbble.com/userupload/22319326/file/original-52d9e7293be78b07c8506afcf5d0f411.gif);
   background-size: cover;
   background-position: center;
   border-radius: 20px;
@@ -351,7 +358,7 @@
 }
 
 .intro-button {
-  background-color: purple;
+  background-color: #0073ff;
   width: 50%;
   padding: 2%;
   border-radius: 10px;
@@ -362,14 +369,13 @@
 }
 
 .intro-logo {
-  width: 40%;
   height: 40%;
 }
 
 .input-chat {
   background-color: transparent;
   border-style: hidden;
-  width: 90%;
+  width: 100%;
 }
 
 .input-chat:focus {

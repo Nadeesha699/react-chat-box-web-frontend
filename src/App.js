@@ -3,6 +3,7 @@ import ChatBody from './pages/ChatBody';
 import Home from './pages/Home';
 import Intro from './pages/Intro';
 import {  Routes, Route, BrowserRouter } from "react-router-dom";
+// import Test from './Test/Test';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route element={<ChatBody/>} path='/chat-body/:uid/:chatid'/>
     </Routes>
     </BrowserRouter>
+    // <Test/>
   );
 }
 

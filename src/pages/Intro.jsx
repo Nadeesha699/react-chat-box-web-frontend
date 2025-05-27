@@ -91,163 +91,172 @@ const Intro = () => {
           style={{ display: visibleRegScreen2 ? "flex" : "none" }}
         >
           <img src={Logo} alt="img" className="intro-logo" />
-          <div className="home-message-list-1">
-            <Mail size={15} />
-            <input
-              placeholder="Email"
-              className="input-chat"
-              value={regTxt.email}
-              onChange={(e) => {
-                setRegTxt((prev) => ({ ...prev, email: e.target.value }));
-                setEmailValidate(isEmail(e.target.value));
-                if (e.target.value.length === 0) {
-                  setEmailValidate(true);
-                }
-              }}
-            />
-            <HelpCircle size={15} />
-          </div>
-          <label
-            className="error-message"
-            style={{
-              visibility:
-                !emailValidate && regTxt.email !== "" ? "visible" : "hidden",
-            }}
-          >
-            Invalid email address
-          </label>
-          <div className="home-message-list-1">
-            <User2Icon size={15} />
-            <input
-              placeholder="User name"
-              className="input-chat"
-              value={regTxt.username}
-              onChange={(e) => {
-                setRegTxt((prev) => ({ ...prev, username: e.target.value }));
-                setUserNameValidate(isUserName(e.target.value));
-                if (e.target.value.length === 0) {
-                  setUserNameValidate(true);
-                }
-              }}
-            />
-            <HelpCircle size={15} />
-          </div>
-          <label
-            className="error-message"
-            style={{
-              visibility:
-                !userNameValidate && regTxt.username !== ""
-                  ? "visible"
-                  : "hidden",
-            }}
-          >
-            Use 3–16 letters / numbers
-          </label>
-          <div className="home-message-list-1">
-            <Lock size={15} />
-            <input
-              placeholder="New password"
-              type={eye1 ? "text" : "password"}
-              className="input-chat"
-              value={regTxt.npassword}
-              onChange={(e) => {
-                setRegTxt((prev) => ({ ...prev, npassword: e.target.value }));
-                setNpasswordValidate(isPassword(e.target.value));
-                if (e.target.value.length === 0) {
-                  setNpasswordValidate(true);
-                }
-              }}
-            />
-            <div
-              onClick={() => {
-                eye1 ? setEye1(false) : setEye1(true);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              {eye1 ? <Eye size={15} /> : <EyeClosed size={15} />}
+          <div className="intro-div-1-1">
+            <div className="home-message-list-1">
+              <Mail size={15} />
+              <input
+                placeholder="Email"
+                className="input-chat"
+                value={regTxt.email}
+                onChange={(e) => {
+                  setRegTxt((prev) => ({ ...prev, email: e.target.value }));
+                  setEmailValidate(isEmail(e.target.value));
+                  if (e.target.value.length === 0) {
+                    setEmailValidate(true);
+                  }
+                }}
+              />
+              <HelpCircle size={15} />
             </div>
-          </div>
-          <label
-            className="error-message"
-            style={{
-              visibility:
-                !npasswordValidate && regTxt.npassword !== ""
-                  ? "visible"
-                  : "hidden",
-            }}
-          >
-            8+ chars, letter & number
-          </label>
-          <div className="home-message-list-1">
-            <Lock size={15} />
-            <input
-              placeholder="Confirm password"
-              type={eye2 ? "text" : "password"}
-              className="input-chat"
-              value={regTxt.cpassword}
-              onChange={(e) => {
-                setRegTxt((prev) => ({ ...prev, cpassword: e.target.value }));
-                setCpasswordValidate(isPassword(e.target.value));
-                if (e.target.value.length === 0) {
-                  setCpasswordValidate(true);
-                }
+            <small
+              className="error-message"
+              style={{
+                visibility:
+                  !emailValidate && regTxt.email !== "" ? "visible" : "hidden",
               }}
-            />
-            <div
-              onClick={() => {
-                eye2 ? setEye2(false) : setEye2(true);
-              }}
-              style={{ cursor: "pointer" }}
             >
-              {eye2 ? <Eye size={15} /> : <EyeClosed size={15} />}
+              Please enter a valid email address.
+            </small>
+            <div className="home-message-list-1">
+              <User2Icon size={15} />
+              <input
+                placeholder="User name"
+                className="input-chat"
+                value={regTxt.username}
+                onChange={(e) => {
+                  setRegTxt((prev) => ({ ...prev, username: e.target.value }));
+                  setUserNameValidate(isUserName(e.target.value));
+                  if (e.target.value.length === 0) {
+                    setUserNameValidate(true);
+                  }
+                }}
+              />
+              <HelpCircle size={15} />
             </div>
-          </div>
-          <label
-            className="error-message"
-            style={{
-              visibility:
-                !cpasswordValidate && regTxt.cpassword !== ""
-                  ? "visible"
-                  : "hidden",
-            }}
-          >
-            8+ chars, letter & number
-          </label>
-          <button
-            className="intro-button"
-            onClick={async () => {
-              let toastId = "";
-              try {
-                if (
-                  isEmail(regTxt.email) &&
-                  isPassword(regTxt.npassword) &&
-                  isPassword(regTxt.cpassword) &&
-                  isUserName(regTxt.username)
-                ) {
-                  if (passwordMatch(regTxt.npassword, regTxt.cpassword)) {
-                    toastId = toast.loading("sign up...", {
-                      style: { color: "purple" },
-                    });
-                    const result = await axios.post(`${api_url}users/set`, {
-                      username: regTxt.username,
-                      email: regTxt.email,
-                      password: regTxt.cpassword,
-                    });
-
-                    if (result.data.data) {
-                      toast.update(toastId, {
-                        render: "Register success!",
-                        type: "success",
-                        isLoading: false,
-                        autoClose: 3000,
-                        icon: <FaCheckCircle color="purple" />,
+            <small
+              className="error-message"
+              style={{
+                visibility:
+                  !userNameValidate && regTxt.username !== ""
+                    ? "visible"
+                    : "hidden",
+              }}
+            >
+              Must be 3–16 alphanumeric characters
+            </small>
+            <div className="home-message-list-1">
+              <Lock size={15} />
+              <input
+                placeholder="New password"
+                type={eye1 ? "text" : "password"}
+                className="input-chat"
+                value={regTxt.npassword}
+                onChange={(e) => {
+                  setRegTxt((prev) => ({ ...prev, npassword: e.target.value }));
+                  setNpasswordValidate(isPassword(e.target.value));
+                  if (e.target.value.length === 0) {
+                    setNpasswordValidate(true);
+                  }
+                }}
+              />
+              <div
+                onClick={() => {
+                  eye1 ? setEye1(false) : setEye1(true);
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                {eye1 ? <Eye size={15} /> : <EyeClosed size={15} />}
+              </div>
+            </div>
+            <small
+              className="error-message"
+              style={{
+                visibility:
+                  !npasswordValidate && regTxt.npassword !== ""
+                    ? "visible"
+                    : "hidden",
+              }}
+            >
+              Use 8+ characters with letters and numbers.
+            </small>
+            <div className="home-message-list-1">
+              <Lock size={15} />
+              <input
+                placeholder="Confirm password"
+                type={eye2 ? "text" : "password"}
+                className="input-chat"
+                value={regTxt.cpassword}
+                onChange={(e) => {
+                  setRegTxt((prev) => ({ ...prev, cpassword: e.target.value }));
+                  setCpasswordValidate(isPassword(e.target.value));
+                  if (e.target.value.length === 0) {
+                    setCpasswordValidate(true);
+                  }
+                }}
+              />
+              <div
+                onClick={() => {
+                  eye2 ? setEye2(false) : setEye2(true);
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                {eye2 ? <Eye size={15} /> : <EyeClosed size={15} />}
+              </div>
+            </div>
+            <small
+              className="error-message"
+              style={{
+                visibility:
+                  !cpasswordValidate && regTxt.cpassword !== ""
+                    ? "visible"
+                    : "hidden",
+              }}
+            >
+              Use 8+ characters with letters and numbers.
+            </small>
+            <button
+              className="intro-button"
+              onClick={async () => {
+                let toastId = "";
+                toastId = toast.loading("sign up...", {
+                  style: { color: "#0073ff" },
+                });
+                try {
+                  if (
+                    isEmail(regTxt.email) &&
+                    isPassword(regTxt.npassword) &&
+                    isPassword(regTxt.cpassword) &&
+                    isUserName(regTxt.username)
+                  ) {
+                    if (passwordMatch(regTxt.npassword, regTxt.cpassword)) {
+                      const result = await axios.post(`${api_url}users/set`, {
+                        username: regTxt.username,
+                        email: regTxt.email,
+                        password: regTxt.cpassword,
                       });
+
+                      if (result.data.data) {
+                        toast.update(toastId, {
+                          render: "Register success!",
+                          type: "success",
+                          isLoading: false,
+                          autoClose: 3000,
+                          icon: <FaCheckCircle color="purple" />,
+                        });
+                      } else {
+                        toast.update(toastId, {
+                          type: "error",
+                          autoClose: 3000,
+                          isLoading: false,
+                          render: "Registration successful!",
+                        });
+                      }
                     } else {
                       toast.update(toastId, {
                         type: "error",
                         autoClose: 3000,
                         isLoading: false,
-                        render: "Something wrong!",
+                        render: "Passwords do not match. Please try again",
                       });
                     }
                   } else {
@@ -255,22 +264,22 @@ const Intro = () => {
                       type: "error",
                       autoClose: 3000,
                       isLoading: false,
-                      render: "Something wrong!",
+                      render: "Please fill the all fields",
                     });
                   }
+                } catch (error) {
+                  toast.update(toastId, {
+                    type: "error",
+                    autoClose: 3000,
+                    isLoading: false,
+                    render: "Something wrong!",
+                  });
                 }
-              } catch (error) {
-                toast.update(toastId, {
-                  type: "error",
-                  autoClose: 3000,
-                  isLoading: false,
-                  render: "Something wrong!",
-                });
-              }
-            }}
-          >
-            Sign up
-          </button>
+              }}
+            >
+              Sign up
+            </button>
+          </div>
         </div>
         <div
           className="intro-div-2"
@@ -305,6 +314,7 @@ const Intro = () => {
           style={{ display: visibleLogScreen2 ? "none" : "flex" }}
         >
           <img src={Logo} className="intro-logo" alt="img" />
+          <div className="intro-div-1-1">
           <div className="home-message-list-1">
             <User2Icon size={15} />
             <input
@@ -342,7 +352,7 @@ const Intro = () => {
             className="intro-button"
             onClick={async () => {
               let toastIds = toast.loading("logging in...", {
-                style: { color: "purple" },
+                style: { color: "#0073ff" },
               });
               try {
                 if (
@@ -378,7 +388,7 @@ const Intro = () => {
                     type: "error",
                     autoClose: 3000,
                     isLoading: false,
-                    render: "fill all fields! ",
+                    render: "Please fill the all fields",
                   });
                 }
               } catch (error) {
@@ -393,6 +403,7 @@ const Intro = () => {
           >
             Login
           </button>
+          </div>
         </div>
       </div>
       <ToastContainer />
