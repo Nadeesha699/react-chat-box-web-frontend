@@ -325,6 +325,10 @@
   justify-content: space-evenly;
 }
 
+.intro-div-1-2{
+  cursor: pointer
+}
+
 .intro-div-2 {
   width: 50%;
   height: 100%;

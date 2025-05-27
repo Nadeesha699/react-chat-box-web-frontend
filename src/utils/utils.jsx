@@ -1,5 +1,3 @@
-
-
 export function timeAgo(date) {
   const now = new Date();
   const diff = now - new Date(date);
@@ -27,4 +25,8 @@ export function timeAgo(date) {
     return "Just now";
   }
 }
+
+export const iconSize = 15;
+
+export const toastColor =  "#0073ff"
 

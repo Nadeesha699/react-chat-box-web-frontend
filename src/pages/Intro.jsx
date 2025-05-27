@@ -11,14 +11,11 @@ import {
 import Logo from "../images/message.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  isEmail,
-  isPassword,
-  isUserName,
-} from "../validation/Validation";
+import { isEmail, isPassword, isUserName } from "../validation/Validation";
 import { login, register } from "../services/services";
+import { iconSize } from "../utils/utils";
 
 const Intro = () => {
   const [visibleButton1, setVisibleButton1] = useState(false);
@@ -90,7 +87,7 @@ const Intro = () => {
           <img src={Logo} alt="img" className="intro-logo" />
           <div className="intro-div-1-1">
             <div className="home-message-list-1">
-              <Mail size={15} />
+              <Mail size={iconSize} />
               <input
                 placeholder="Email"
                 className="input-chat"
@@ -103,7 +100,7 @@ const Intro = () => {
                   }
                 }}
               />
-              <HelpCircle size={15} />
+              <HelpCircle size={iconSize} />
             </div>
             <small
               className="error-message"
@@ -115,7 +112,7 @@ const Intro = () => {
               Please enter a valid email address.
             </small>
             <div className="home-message-list-1">
-              <User2Icon size={15} />
+              <User2Icon size={iconSize} />
               <input
                 placeholder="User name"
                 className="input-chat"
@@ -128,7 +125,7 @@ const Intro = () => {
                   }
                 }}
               />
-              <HelpCircle size={15} />
+              <HelpCircle size={iconSize} />
             </div>
             <small
               className="error-message"
@@ -142,7 +139,7 @@ const Intro = () => {
               Must be 3–16 alphanumeric characters
             </small>
             <div className="home-message-list-1">
-              <Lock size={15} />
+              <Lock size={iconSize} />
               <input
                 placeholder="New password"
                 type={eye1 ? "text" : "password"}
@@ -160,9 +157,9 @@ const Intro = () => {
                 onClick={() => {
                   eye1 ? setEye1(false) : setEye1(true);
                 }}
-                style={{ cursor: "pointer" }}
+                className="intro-div-1-2"
               >
-                {eye1 ? <Eye size={15} /> : <EyeClosed size={15} />}
+                {eye1 ? <Eye size={iconSize} /> : <EyeClosed size={iconSize} />}
               </div>
             </div>
             <small
@@ -177,7 +174,7 @@ const Intro = () => {
               Use 8+ characters with letters and numbers.
             </small>
             <div className="home-message-list-1">
-              <Lock size={15} />
+              <Lock size={iconSize} />
               <input
                 placeholder="Confirm password"
                 type={eye2 ? "text" : "password"}
@@ -195,9 +192,9 @@ const Intro = () => {
                 onClick={() => {
                   eye2 ? setEye2(false) : setEye2(true);
                 }}
-                style={{ cursor: "pointer" }}
+                className="intro-div-1-2"
               >
-                {eye2 ? <Eye size={15} /> : <EyeClosed size={15} />}
+                {eye2 ? <Eye size={iconSize} /> : <EyeClosed size={iconSize} />}
               </div>
             </div>
             <small
@@ -221,7 +218,6 @@ const Intro = () => {
                   regTxt.username
                 );
               }}
-             
             >
               Sign up
             </button>
@@ -262,7 +258,7 @@ const Intro = () => {
           <img src={Logo} className="intro-logo" alt="img" />
           <div className="intro-div-1-1">
             <div className="home-message-list-1">
-              <User2Icon size={15} />
+              <User2Icon size={iconSize} />
               <input
                 placeholder="User name"
                 className="input-chat"
@@ -274,10 +270,10 @@ const Intro = () => {
                   }));
                 }}
               />
-              <HelpCircle size={15} />
+              <HelpCircle size={iconSize} />
             </div>
             <div className="home-message-list-1">
-              <Lock size={15} />
+              <Lock size={iconSize} />
               <input
                 placeholder="Password"
                 type={eye3 ? "text" : "password"}
@@ -294,9 +290,9 @@ const Intro = () => {
                 onClick={() => {
                   eye3 ? setEye3(false) : setEye3(true);
                 }}
-                style={{ cursor: "pointer" }}
+                className="intro-div-1-2"
               >
-                {eye3 ? <Eye size={15} /> : <EyeClosed size={15} />}
+                {eye3 ? <Eye size={iconSize} /> : <EyeClosed size={iconSize} />}
               </div>
             </div>
 
@@ -305,7 +301,6 @@ const Intro = () => {
               onClick={async () => {
                 login(loginTxt.username, loginTxt.password, navigate);
               }}
-              
             >
               Login
             </button>

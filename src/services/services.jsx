@@ -8,6 +8,7 @@ import {
   isUserName,
   passwordMatch,
 } from "../validation/Validation";
+import {toastColor} from '../utils/utils'
 
 export const latestMessage = async (a) => {
   try {
@@ -51,7 +52,7 @@ export const unreadCount = async (a) => {
 
 export const login = async (username, password, navigate) => {
   let toastIds = toast.loading("logging in...", {
-    style: { color: "#0073ff" },
+    style:{color:{toastColor}}
   });
   try {
     if (username.length !== 0 && password.length !== 0) {
@@ -65,7 +66,7 @@ export const login = async (username, password, navigate) => {
           type: "success",
           isLoading: false,
           autoClose: 3000,
-          icon: <FaCheckCircle color="purple" />,
+          icon: <FaCheckCircle color={toastColor} />,
         });
         setTimeout(() => {
           navigate(`/home/${result.data.data.id}`);
@@ -100,7 +101,7 @@ export const login = async (username, password, navigate) => {
 export const register = async (email, npassword, cpassword, username) => {
   let toastId = "";
   toastId = toast.loading("sign up...", {
-    style: { color: "#0073ff" },
+    style:{color:{toastColor}}
   });
   try {
     if (
@@ -118,18 +119,18 @@ export const register = async (email, npassword, cpassword, username) => {
 
         if (result.data.data) {
           toast.update(toastId, {
-            render: "Register success!",
+            render: "Registration successful!",
             type: "success",
             isLoading: false,
             autoClose: 3000,
-            icon: <FaCheckCircle color="purple" />,
+            icon: <FaCheckCircle color={toastColor} />,
           });
         } else {
           toast.update(toastId, {
             type: "error",
             autoClose: 3000,
             isLoading: false,
-            render: "Registration successful!",
+            render: "Registration failed!",
           });
         }
       } else {
@@ -157,4 +158,3 @@ export const register = async (email, npassword, cpassword, username) => {
     });
   }
 };
-
