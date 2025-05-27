@@ -11,17 +11,14 @@ import {
 import Logo from "../images/message.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaCheckCircle } from "react-icons/fa";
 import {
   isEmail,
   isPassword,
   isUserName,
-  passwordMatch,
 } from "../validation/Validation";
-import { api_url } from "../components/Components";
+import { login, register } from "../services/services";
 
 const Intro = () => {
   const [visibleButton1, setVisibleButton1] = useState(false);
@@ -52,7 +49,7 @@ const Intro = () => {
   const [cpasswordValidate, setCpasswordValidate] = useState(true);
 
   useEffect(() => {
-    document.title = "CHATTERBOX - login";
+    document.title = "Chat Box - login";
   }, []);
 
   return (
@@ -75,7 +72,7 @@ const Intro = () => {
             <div
               className="intro-div-4"
               onClick={() => {
-                document.title = "CHATTERBOX - register";
+                document.title = "Chat Box - register";
                 setVisibleRegScreen1(false);
                 setVisibleRegScreen2(true);
                 setVisibleLogScreen1(false);
@@ -217,65 +214,14 @@ const Intro = () => {
             <button
               className="intro-button"
               onClick={async () => {
-                let toastId = "";
-                toastId = toast.loading("sign up...", {
-                  style: { color: "#0073ff" },
-                });
-                try {
-                  if (
-                    isEmail(regTxt.email) &&
-                    isPassword(regTxt.npassword) &&
-                    isPassword(regTxt.cpassword) &&
-                    isUserName(regTxt.username)
-                  ) {
-                    if (passwordMatch(regTxt.npassword, regTxt.cpassword)) {
-                      const result = await axios.post(`${api_url}users/set`, {
-                        username: regTxt.username,
-                        email: regTxt.email,
-                        password: regTxt.cpassword,
-                      });
-
-                      if (result.data.data) {
-                        toast.update(toastId, {
-                          render: "Register success!",
-                          type: "success",
-                          isLoading: false,
-                          autoClose: 3000,
-                          icon: <FaCheckCircle color="purple" />,
-                        });
-                      } else {
-                        toast.update(toastId, {
-                          type: "error",
-                          autoClose: 3000,
-                          isLoading: false,
-                          render: "Registration successful!",
-                        });
-                      }
-                    } else {
-                      toast.update(toastId, {
-                        type: "error",
-                        autoClose: 3000,
-                        isLoading: false,
-                        render: "Passwords do not match. Please try again",
-                      });
-                    }
-                  } else {
-                    toast.update(toastId, {
-                      type: "error",
-                      autoClose: 3000,
-                      isLoading: false,
-                      render: "Please fill the all fields",
-                    });
-                  }
-                } catch (error) {
-                  toast.update(toastId, {
-                    type: "error",
-                    autoClose: 3000,
-                    isLoading: false,
-                    render: "Something wrong!",
-                  });
-                }
+                register(
+                  regTxt.email,
+                  regTxt.npassword,
+                  regTxt.cpassword,
+                  regTxt.username
+                );
               }}
+             
             >
               Sign up
             </button>
@@ -298,7 +244,7 @@ const Intro = () => {
             <div
               className="intro-div-4"
               onClick={() => {
-                document.title = "CHATTERBOX - login";
+                document.title = "Chat Box - login";
                 setVisibleLogScreen1(true);
                 setVisibleLogScreen2(false);
                 setVisibleRegScreen1(true);
@@ -315,94 +261,54 @@ const Intro = () => {
         >
           <img src={Logo} className="intro-logo" alt="img" />
           <div className="intro-div-1-1">
-          <div className="home-message-list-1">
-            <User2Icon size={15} />
-            <input
-              placeholder="User name"
-              className="input-chat"
-              value={loginTxt.username}
-              onChange={(e) => {
-                setLoginTxt((prev) => ({ ...prev, username: e.target.value }));
-              }}
-            />
-            <HelpCircle size={15} />
-          </div>
-          <div className="home-message-list-1">
-            <Lock size={15} />
-            <input
-              placeholder="Password"
-              type={eye3 ? "text" : "password"}
-              className="input-chat"
-              value={loginTxt.password}
-              onChange={(e) => {
-                setLoginTxt((prev) => ({ ...prev, password: e.target.value }));
-              }}
-            />
-            <div
-              onClick={() => {
-                eye3 ? setEye3(false) : setEye3(true);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              {eye3 ? <Eye size={15} /> : <EyeClosed size={15} />}
+            <div className="home-message-list-1">
+              <User2Icon size={15} />
+              <input
+                placeholder="User name"
+                className="input-chat"
+                value={loginTxt.username}
+                onChange={(e) => {
+                  setLoginTxt((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }));
+                }}
+              />
+              <HelpCircle size={15} />
             </div>
-          </div>
+            <div className="home-message-list-1">
+              <Lock size={15} />
+              <input
+                placeholder="Password"
+                type={eye3 ? "text" : "password"}
+                className="input-chat"
+                value={loginTxt.password}
+                onChange={(e) => {
+                  setLoginTxt((prev) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }));
+                }}
+              />
+              <div
+                onClick={() => {
+                  eye3 ? setEye3(false) : setEye3(true);
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                {eye3 ? <Eye size={15} /> : <EyeClosed size={15} />}
+              </div>
+            </div>
 
-          <button
-            className="intro-button"
-            onClick={async () => {
-              let toastIds = toast.loading("logging in...", {
-                style: { color: "#0073ff" },
-              });
-              try {
-                if (
-                  loginTxt.username.length !== 0 &&
-                  loginTxt.password.length !== 0
-                ) {
-                  const result = await axios.post(`${api_url}users/login`, {
-                    username: loginTxt.username,
-                    password: loginTxt.password,
-                  });
-                  if (result.data.success) {
-                    toast.update(toastIds, {
-                      render: "Login success!",
-                      type: "success",
-                      isLoading: false,
-                      autoClose: 3000,
-                      icon: <FaCheckCircle color="purple" />,
-                    });
-                    setTimeout(() => {
-                      navigate(`/home/${result.data.data.id}`);
-                    }, 2500);
-                  } else {
-                    toast.update(toastIds, {
-                      type: "error",
-                      autoClose: 3000,
-                      isLoading: false,
-                      render: "Wrong candidate",
-                    });
-                    navigate("/");
-                  }
-                } else {
-                  toast.update(toastIds, {
-                    type: "error",
-                    autoClose: 3000,
-                    isLoading: false,
-                    render: "Please fill the all fields",
-                  });
-                }
-              } catch (error) {
-                toast.update(toastIds, {
-                  type: "error",
-                  autoClose: 3000,
-                  isLoading: false,
-                  render: "Wrong candidate",
-                });
-              }
-            }}
-          >
-            Login
-          </button>
+            <button
+              className="intro-button"
+              onClick={async () => {
+                login(loginTxt.username, loginTxt.password, navigate);
+              }}
+              
+            >
+              Login
+            </button>
           </div>
         </div>
       </div>
