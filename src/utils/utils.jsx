@@ -44,9 +44,15 @@ export const iconColor = "white";
 
 export const iconColor01 = "#c2daf7";
 
-export const updateColor = "#00ff00ab"
+export const iconColor02 = "black";
 
-export const deleteColor = "#ff000057"
+export const iconColor03 = "#a2a2a2";
+
+export const updateColor = "#00ff00ab";
+
+export const deleteColor = "#ff000057";
+
+export const normalColor = "transparent";
 
 export const messageCard = {
   senderPostion: "flex-end",
@@ -56,3 +62,7 @@ export const messageCard = {
   num1: 0,
   num2: "20px",
 };
+
+export const hideNum01 = "20%";
+
+export const hideNum02 = "-100%";

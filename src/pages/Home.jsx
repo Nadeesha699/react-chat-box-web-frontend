@@ -18,8 +18,16 @@ import userJsonData from "../json/userJsonData.json";
 import userSinlgeJsonData from "../json/userSingleJsonData.json";
 import {
   deleteColor,
+  hideNum01,
+  hideNum02,
   iconColor,
+  iconColor02,
+  iconColor03,
+  iconSize,
+  iconSize01,
+  iconSize02,
   messageCard,
+  normalColor,
   timeAgo,
   toastColor,
   toastColor01,
@@ -105,7 +113,7 @@ const Home = () => {
 
   useEffect(() => {
     try {
-      document.title = "CHATTERBOX - converstion";
+      document.title = "Chat Box - converstion";
       const loadData = () => {
         axios
           .get(`${api_url}conversation/get-all/by-user-id?id=${uid}`)
@@ -240,22 +248,14 @@ const Home = () => {
       ) : (
         <>
           <div className="home-message-list">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
+            <div className="home-input-div">
               <UserCircleIcon
-                size={40}
-                color="white"
-                style={{ cursor: "pointer" }}
+                size={iconSize01}
+                color={iconColor}
+                className="icon-hover"
                 onClick={async () => {
                   const result = await axios.get(
                     `${api_url}users/get-user/by-id?id=${Number(uid)}`
-                    // `${api_url}users/get-user/by-id?id=22`
                   );
                   if (result.data.data) {
                     setUserData(result.data.data);
@@ -263,15 +263,11 @@ const Home = () => {
                   }
                 }}
               />
-              <label
-                style={{ color: "white", fontWeight: "bold", fontSize: "30px" }}
-              >
-                Chat
-              </label>
+              <label className="label-7">Chat</label>
             </div>
             <div className="home-container-1">
               <div className="home-message-list-2">
-                <Search color="white" />
+                <Search color={iconColor} />
                 <input
                   placeholder="search"
                   className="input-1"
@@ -280,13 +276,13 @@ const Home = () => {
                 />
               </div>
               <Edit
-                color="white"
+                color={iconColor}
                 onClick={() => {
                   visibleUserList
                     ? setVisibleUserList(false)
                     : setVisibleUserList(true);
                 }}
-                style={{ cursor: "pointer" }}
+                className="icon-hover"
               />
             </div>
             <div className="scroll-container">
@@ -319,7 +315,7 @@ const Home = () => {
                       }
                       key={index}
                       onClick={() => {
-                        document.title = "CHATTERBOX - chat";
+                        document.title = "Chat Box - chat";
                         axios
                           .get(
                             `${api_url}message/get-all/by-conversation-id?id=${e.id}`
@@ -373,12 +369,12 @@ const Home = () => {
                         style={{
                           backgroundColor: changeDeleteColor
                             ? e.id === hoveredConversationId
-                              ? "#ff000057"
-                              : "transparent"
-                            : "transparent",
+                              ? deleteColor
+                              : normalColor
+                            : normalColor,
                         }}
                       >
-                        <User size={"40"} color="white" />
+                        <User size={iconSize01} color={iconColor} />
                         <div className="message-card-1">
                           <div className="message-card-2">
                             {e.createrId === parseInt(uid) ? (
@@ -391,9 +387,9 @@ const Home = () => {
                               </label>
                             )}
                             {reads[e.id] ? (
-                              <CheckCheck size={"20"} color="blue" />
+                              <CheckCheck size={iconSize} color={iconColor} />
                             ) : (
-                              <CheckCheck size={"20"} color="gray" />
+                              <CheckCheck size={iconSize} color={iconColor03} />
                             )}
 
                             <label className="label-2">
@@ -410,15 +406,15 @@ const Home = () => {
                         <Trash2Icon
                           onClick={() => {
                             Swal.fire({
-                              background: "#00000089",
-                              title: "CHATTERBOX",
+                              background: toastColor01,
+                              title: "Chat Box",
                               text: "Do yo want to delete this conversation ? ",
-                              color: "white",
+                              color: iconColor,
                               showCancelButton: true,
                               cancelButtonText: "no",
                               confirmButtonText: "yes",
-                              cancelButtonColor: "purple",
-                              confirmButtonColor: "#ff0088",
+                              cancelButtonColor: toastColor02,
+                              confirmButtonColor: toastColor,
                             }).then(async (result) => {
                               if (result.isConfirmed) {
                                 await axios.delete(
@@ -447,9 +443,9 @@ const Home = () => {
                           color={
                             changeDeleteColor
                               ? e.id === hoveredConversationId
-                                ? "white"
-                                : "black"
-                              : "black"
+                                ? iconColor
+                                : iconColor02
+                              : iconColor02
                           }
                           style={{
                             opacity: visibleTrash
@@ -523,22 +519,17 @@ const Home = () => {
                               <label className="label-4">
                                 {timeAgo(e.createAt)}
                               </label>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "flex-end",
-                                }}
-                              >
+                              <div className="div-1">
                                 <Edit
-                                  size={15}
+                                  size={iconSize}
                                   style={{
                                     opacity: visibleMessageTrashAndEdit
                                       ? hoveredMessageId === e.id
                                         ? 1
                                         : 0
                                       : 0,
-                                    cursor: "pointer",
                                   }}
+                                  className="icon-hover"
                                   onMouseEnter={() => {
                                     setEditChangeMessageBackground(true);
                                   }}
@@ -608,15 +599,15 @@ const Home = () => {
                                   }}
                                 />
                                 <Trash2Icon
-                                  size={15}
+                                  size={iconSize}
                                   style={{
                                     opacity: visibleMessageTrashAndEdit
                                       ? hoveredMessageId === e.id
                                         ? 1
                                         : 0
                                       : 0,
-                                    cursor: "pointer",
                                   }}
+                                  className="icon-hover"
                                   onMouseEnter={() => {
                                     setDeleteChangeMessageBackground(true);
                                   }}
@@ -691,14 +682,14 @@ const Home = () => {
                     }
                   }}
                 />
-                <Send onClick={sendMessage} color="white" />
+                <Send onClick={sendMessage} color={iconColor} />
               </div>
             </div>
           )}
           <div
             className="home-container-3"
             style={{
-              top: visibleUserList ? "20%" : "-100%",
+              top: visibleUserList ? hideNum01 : hideNum02,
             }}
           >
             <label className="label-5">New Chat</label>
@@ -794,44 +785,32 @@ const Home = () => {
       <div
         className="profile-update-div"
         style={{
-          top: visibleUserUpdatePanel ? "10%" : "-100%",
+          top: visibleUserUpdatePanel ? hideNum01 : hideNum02,
         }}
       >
-        <label style={{ fontWeight: "bold", fontSize: "30px" }}>Profile</label>
-        <UserCircleIcon size={60} />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
+        <label className="label-7">Profile</label>
+        <UserCircleIcon size={iconSize02} color={iconColor}/>
+        <div className="home-input-div">
           <input
             disabled={!pen1}
-            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
+            className="input-2"
             value={userData.username}
             onChange={(e) => {
               setUserData((prev) => ({ ...prev, username: e.target.value }));
             }}
           />
           <Pen
+          className="icon-hover"
+          color={iconColor}
             onClick={() => {
               setPen1(!pen1);
             }}
           />
         </div>
         <label className="label-5">Email </label>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
+        <div className="home-input-div">
           <input
-            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
+            className="input-2"
             value={userData.email}
             disabled={!pen2}
             onChange={(e) => {
@@ -839,22 +818,17 @@ const Home = () => {
             }}
           />
           <Pen
+          className="icon-hover"
+          color={iconColor}
             onClick={() => {
               setPen2(!pen2);
             }}
           />
         </div>
         <label className="label-5">Current Password</label>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
+        <div className="home-input-div">
           <input
-            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
+            className="input-2"
             value={passwordArray.cupass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, cupass: e.target.value }));
@@ -862,16 +836,9 @@ const Home = () => {
           />
         </div>
         <label className="label-5">New Password</label>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
+        <div className="home-input-div">
           <input
-            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
+            className="input-2"
             value={passwordArray.npass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, npass: e.target.value }));
@@ -879,16 +846,9 @@ const Home = () => {
           />
         </div>
         <label className="label-5">Confirm Password</label>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
+        <div className="home-input-div">
           <input
-            style={{ borderRadius: "10px", borderWidth: "1px", padding: "2%" }}
+            className="input-2"
             value={passwordArray.copass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, copass: e.target.value }));
@@ -931,10 +891,10 @@ const Home = () => {
             } catch (error) {}
           }}
         >
-          <Save />
+          <Save color={iconColor} />
           <label className="label-5">update</label>
         </div>
-        <Logout />
+        <Logout/>
       </div>
     </div>
   );

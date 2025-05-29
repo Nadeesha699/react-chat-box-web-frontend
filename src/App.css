@@ -3,7 +3,7 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
-  background: linear-gradient(to right, #29a6ff, #84ccff, #0262a8,#dff2ff);
+  background: linear-gradient(to right, #29a6ff, #84ccff, #0262a8, #dff2ff);
 }
 
 .home-container-1 {
@@ -69,6 +69,12 @@
   outline: none;
 }
 
+.input-2 {
+  border-radius: 10px;
+  border-width: 1px;
+  padding: 2%;
+}
+
 .label-1 {
   font-weight: bold;
   color: white;
@@ -91,6 +97,27 @@
 
 .label-5 {
   font-weight: bold;
+  color: white;
+}
+
+.label-6 {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.label-7 {
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.div-1 {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon-hover {
+  cursor: pointer;
 }
 
 .message-text-card {
@@ -133,6 +160,13 @@
   padding: 2%;
   border-radius: 10px;
   width: 100%;
+}
+
+.home-input-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .loading-screen {

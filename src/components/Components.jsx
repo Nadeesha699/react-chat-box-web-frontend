@@ -49,7 +49,7 @@ export const Logout = () => {
         });
       }}
     >
-      <LogOut />
+      <LogOut  color={iconColor} />
       <label className="label-5">logout</label>
     </div>
   );
