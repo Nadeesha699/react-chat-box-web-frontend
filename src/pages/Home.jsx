@@ -16,7 +16,16 @@ import conversationJsonData from "../json/conversationJsonData.json";
 import chatJsonData from "../json/chatJsonData.json";
 import userJsonData from "../json/userJsonData.json";
 import userSinlgeJsonData from "../json/userSingleJsonData.json";
-import { timeAgo } from "../utils/utils";
+import {
+  deleteColor,
+  iconColor,
+  messageCard,
+  timeAgo,
+  toastColor,
+  toastColor01,
+  toastColor02,
+  updateColor,
+} from "../utils/utils";
 import {
   latestMessage,
   latestRead,
@@ -245,8 +254,8 @@ const Home = () => {
                 style={{ cursor: "pointer" }}
                 onClick={async () => {
                   const result = await axios.get(
-                    // `${api_url}users/get-user/by-id?id=${Number(uid)}`
-                    `${api_url}users/get-user/by-id?id=22`
+                    `${api_url}users/get-user/by-id?id=${Number(uid)}`
+                    // `${api_url}users/get-user/by-id?id=22`
                   );
                   if (result.data.data) {
                     setUserData(result.data.data);
@@ -476,8 +485,8 @@ const Home = () => {
                               display: "flex",
                               justifyContent:
                                 e.userid === parseInt(uid)
-                                  ? "flex-end"
-                                  : "flex-start",
+                                  ? messageCard.senderPostion
+                                  : messageCard.recieverPostion,
                             }}
                           >
                             <div
@@ -493,17 +502,21 @@ const Home = () => {
                                 backgroundColor:
                                   deleteChangeMessageBackground &&
                                   hoveredMessageId === e.id
-                                    ? "#ff000057"
+                                    ? deleteColor
                                     : editChangeMessageBackground &&
                                       hoveredMessageId === e.id
-                                    ? "#00ff00ab"
+                                    ? updateColor
                                     : e.userid === parseInt(uid)
-                                    ? "#e3adf9"
-                                    : "#cfcfcf",
+                                    ? messageCard.senderColor
+                                    : messageCard.recieverColor,
                                 borderTopRightRadius:
-                                  e.userid === parseInt(uid) ? 0 : "20px",
+                                  e.userid === parseInt(uid)
+                                    ? messageCard.num1
+                                    : messageCard.num2,
                                 borderTopLeftRadius:
-                                  e.userid === parseInt(uid) ? "20px" : 0,
+                                  e.userid === parseInt(uid)
+                                    ? messageCard.num2
+                                    : messageCard.num1,
                               }}
                             >
                               <label className="label-3">{e.message}</label>
@@ -534,15 +547,15 @@ const Home = () => {
                                   }}
                                   onClick={() => {
                                     Swal.fire({
-                                      background: "#00000089",
-                                      title: "CHATTERBOX",
+                                      background: toastColor01,
+                                      title: "Chat Box",
                                       text: "Do you want to edit this message ?",
-                                      color: "white",
+                                      color: iconColor,
                                       showCancelButton: true,
                                       cancelButtonText: "cancel",
                                       confirmButtonText: "edit",
-                                      cancelButtonColor: "purple",
-                                      confirmButtonColor: "#ff0088",
+                                      cancelButtonColor: toastColor02,
+                                      confirmButtonColor: toastColor,
                                       input: "text",
                                       inputPlaceholder: e.message,
                                     }).then(async (result) => {
@@ -688,8 +701,7 @@ const Home = () => {
               top: visibleUserList ? "20%" : "-100%",
             }}
           >
-            {" "}
-            <label style={{ fontWeight: "bold" }}>New Chat</label>{" "}
+            <label className="label-5">New Chat</label>
             <div className="home-message-list-1-1">
               <Search />
               <input
@@ -765,7 +777,7 @@ const Home = () => {
                             }
                           });
 
-                        document.title = "CHATTERBOX - chat";
+                        document.title = "Chat Box - chat";
                       }}
                       key={index}
                       className="home-container-5"
@@ -780,21 +792,9 @@ const Home = () => {
         </>
       )}
       <div
+        className="profile-update-div"
         style={{
-          position: "fixed",
           top: visibleUserUpdatePanel ? "10%" : "-100%",
-          left: "20%",
-          backgroundColor: "white",
-          width: "auto",
-          height: "auto",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          padding: "2%",
-          gap: "10px",
-          borderRadius: "10px",
-          boxShadow: "10px 10px 10px black",
-          transition:"all 1s ease-in-out"
         }}
       >
         <label style={{ fontWeight: "bold", fontSize: "30px" }}>Profile</label>
@@ -821,7 +821,7 @@ const Home = () => {
             }}
           />
         </div>
-        <label style={{ fontWeight: "bold" }}>Email </label>
+        <label className="label-5">Email </label>
         <div
           style={{
             display: "flex",
@@ -844,7 +844,7 @@ const Home = () => {
             }}
           />
         </div>
-        <label style={{ fontWeight: "bold" }}>Current Password</label>
+        <label className="label-5">Current Password</label>
         <div
           style={{
             display: "flex",
@@ -861,7 +861,7 @@ const Home = () => {
             }}
           />
         </div>
-        <label style={{ fontWeight: "bold" }}>New Password</label>
+        <label className="label-5">New Password</label>
         <div
           style={{
             display: "flex",
@@ -878,7 +878,7 @@ const Home = () => {
             }}
           />
         </div>
-        <label style={{ fontWeight: "bold" }}>Confirm Password</label>
+        <label className="label-5">Confirm Password</label>
         <div
           style={{
             display: "flex",
@@ -932,13 +932,7 @@ const Home = () => {
           }}
         >
           <Save />
-          <label
-            style={{
-              fontWeight: "bold",
-            }}
-          >
-            update
-          </label>
+          <label className="label-5">update</label>
         </div>
         <Logout />
       </div>

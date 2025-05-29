@@ -3,11 +3,8 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
-  /* animation: changeColor 30s ease-in-out infinite;
-  transition: background-color 2s ease-in-out; */
-  background-color: #c635ff;
+  background: linear-gradient(to right, #29a6ff, #84ccff, #0262a8,#dff2ff);
 }
-
 
 .home-container-1 {
   display: flex;
@@ -92,6 +89,10 @@
   font-size: 10px;
 }
 
+.label-5 {
+  font-weight: bold;
+}
+
 .message-text-card {
   width: 20%;
   border-bottom-left-radius: 20px;
@@ -148,7 +149,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #e3adf9;
+  background-color: #c2daf7;
   padding: 2%;
   border-radius: 10px;
   width: 80%;
@@ -188,8 +189,6 @@
   padding: 2%;
   overflow: scroll;
   height: 73%;
-
-  /* height: 80%; */
 }
 
 .home-message-card-1::-webkit-scrollbar {
@@ -205,7 +204,6 @@
 .scroll-container {
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
   overflow: scroll;
   height: 100%;
 }
@@ -305,8 +303,8 @@
   justify-content: space-evenly;
 }
 
-.intro-div-1-2{
-  cursor: pointer
+.intro-div-1-2 {
+  cursor: pointer;
 }
 
 .intro-div-2 {
@@ -322,7 +320,6 @@
 
 .intro-div-3 {
   width: 100%;
-  /* display: flex; */
   justify-content: center;
   align-items: center;
   height: 100%;
@@ -377,8 +374,25 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  background: linear-gradient(to right, #29a6ff, #84ccff, #dff2ff,#0262a8);
+  background: linear-gradient(to right, #29a6ff, #84ccff, #dff2ff, #0262a8);
 }
+
+.profile-update-div {
+  position: fixed;
+  left: 20%;
+  background-color: rgba(0, 0, 0, 0.553);
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 2%;
+  gap: 10px;
+  border-radius: 5px;
+  box-shadow: 20px 20px 20px black;
+  transition: all 1s ease-in-out;
+}
+
 @media (max-width: 575.98px) {
   .intro-card {
     flex-direction: column;

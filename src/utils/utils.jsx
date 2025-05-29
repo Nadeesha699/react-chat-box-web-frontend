@@ -28,9 +28,25 @@ export function timeAgo(date) {
 
 export const iconSize = 15;
 
+export const iconSize01 = 50;
+
+export const iconSize02 = 60;
+
+export const iconSize03 = 100;
+
 export const toastColor = "#0073ff";
 
+export const toastColor01 = "#00000089";
+
+export const toastColor02 = "#ff004c";
+
 export const iconColor = "white";
+
+export const iconColor01 = "#c2daf7";
+
+export const updateColor = "#00ff00ab"
+
+export const deleteColor = "#ff000057"
 
 export const messageCard = {
   senderPostion: "flex-end",
@@ -40,5 +56,3 @@ export const messageCard = {
   num1: 0,
   num2: "20px",
 };
-
-

@@ -3,18 +3,19 @@ import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import { iconSize01, iconSize03, toastColor,iconColor, iconColor01,toastColor01,toastColor02 } from "../utils/utils";
 
 export const EmptyMessageBody = () => {
   return (
     <div className="home-message-body-empty">
-      <FaMessage size={100} color="#e3adf9" />
-      <label style={{ color: "white" }}>Welcome to Chatterbox</label>
-      <p style={{ color: "white" }}>
+      <FaMessage size={iconSize03} color={iconColor01} />
+      <label style={{ color: iconColor }}>Welcome to Chatterbox</label>
+      <small style={{ color: iconColor }}>
         Start a conversation by adding new friends!
-      </p>
-      <p style={{ color: "white" }}>
+      </small>
+      <small style={{ color: iconColor }}>
         Your chats will appear here once you start messaging.
-      </p>
+      </small>
     </div>
   );
 };
@@ -22,7 +23,7 @@ export const EmptyMessageBody = () => {
 export const LoadingScreen = () => {
   return (
     <div className="loading-screen">
-      <ClipLoader color="purple" size={50} />
+      <ClipLoader color={toastColor} size={iconSize01} />
     </div>
   );
 };
@@ -34,27 +35,22 @@ export const Logout = () => {
       className="logout-container"
       onClick={() => {
         Swal.fire({
-          background: "#00000089",
-          title: "CHATTERBOX",
+          background: toastColor01,
+          title: "Chat Box",
           text: "Are you want to logout ? ",
-          color: "white",
+          color: iconColor,
           showCancelButton: true,
           cancelButtonText: "no",
           confirmButtonText: "yes",
-          cancelButtonColor: "#ff0088",
+          cancelButtonColor: toastColor02,
+          confirmButtonColor:toastColor,
         }).then((result) => {
           result.isConfirmed ? navigate("/") : navigate("#");
         });
       }}
     >
       <LogOut />
-      <label
-        style={{
-          fontWeight: "bold"
-        }}
-      >
-        logout
-      </label>
+      <label className="label-5">logout</label>
     </div>
   );
 };
