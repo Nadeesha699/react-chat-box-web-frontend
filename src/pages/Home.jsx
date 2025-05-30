@@ -47,6 +47,7 @@ import {
   Logout,
 } from "../components/Components";
 import Swal from "sweetalert2";
+import { isEmail, isPassword, isUserName } from "../validation/Validation";
 
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
@@ -88,6 +89,12 @@ const Home = () => {
   const [pen1, setPen1] = useState(false);
   const [pen2, setPen2] = useState(false);
   const [visibleUserUpdatePanel, setVisibleUserUpdatePanel] = useState(false);
+
+  const [emailValidate, setEmailValidate] = useState(true);
+  const [userNameValidate, setUserNameValidate] = useState(true);
+  const [npasswordValidate, setNpasswordValidate] = useState(true);
+  const [cupasswordValidate, setCupasswordValidate] = useState(true);
+  const [copasswordValidate, setCopasswordValidate] = useState(true);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -692,9 +699,9 @@ const Home = () => {
               top: visibleUserList ? hideNum01 : hideNum02,
             }}
           >
-            <label className="label-5">New Chat</label>
+            <label className="label-7">New Chat</label>
             <div className="home-message-list-1-1">
-              <Search />
+              <Search color={iconColor} />
               <input
                 placeholder="search"
                 className="input-1"
@@ -773,8 +780,8 @@ const Home = () => {
                       key={index}
                       className="home-container-5"
                     >
-                      <User />
-                      <label>{e.username}</label>
+                      <User color={iconColor} />
+                      <label style={{ color: iconColor }}>{e.username}</label>
                     </div>
                   );
                 })}
@@ -789,7 +796,7 @@ const Home = () => {
         }}
       >
         <label className="label-7">Profile</label>
-        <UserCircleIcon size={iconSize02} color={iconColor}/>
+        <UserCircleIcon size={iconSize02} color={iconColor} />
         <div className="home-input-div">
           <input
             disabled={!pen1}
@@ -797,16 +804,23 @@ const Home = () => {
             value={userData.username}
             onChange={(e) => {
               setUserData((prev) => ({ ...prev, username: e.target.value }));
+              setUserNameValidate(isUserName(e.target.value));
             }}
           />
           <Pen
-          className="icon-hover"
-          color={iconColor}
+            className="icon-hover"
+            color={iconColor}
             onClick={() => {
               setPen1(!pen1);
             }}
           />
         </div>
+        <small
+          className="error-message"
+          style={{ visibility: userNameValidate ? "hidden" : "visible" }}
+        >
+          Please enter a valid email address.
+        </small>
         <label className="label-5">Email </label>
         <div className="home-input-div">
           <input
@@ -815,16 +829,23 @@ const Home = () => {
             disabled={!pen2}
             onChange={(e) => {
               setUserData((prev) => ({ ...prev, email: e.target.value }));
+              setEmailValidate(isEmail(e.target.value));
             }}
           />
           <Pen
-          className="icon-hover"
-          color={iconColor}
+            className="icon-hover"
+            color={iconColor}
             onClick={() => {
               setPen2(!pen2);
             }}
           />
         </div>
+        <small
+          className="error-message"
+          style={{ visibility: emailValidate ? "hidden" : "visible" }}
+        >
+          Must be 3–16 alphanumeric characters
+        </small>
         <label className="label-5">Current Password</label>
         <div className="home-input-div">
           <input
@@ -832,9 +853,16 @@ const Home = () => {
             value={passwordArray.cupass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, cupass: e.target.value }));
+              setCupasswordValidate(isPassword(e.target.value));
             }}
           />
         </div>
+        <small
+          className="error-message"
+          style={{ visibility: cupasswordValidate ? "hidden" : "visible" }}
+        >
+          Use 8+ characters with letters and numbers.
+        </small>
         <label className="label-5">New Password</label>
         <div className="home-input-div">
           <input
@@ -842,9 +870,16 @@ const Home = () => {
             value={passwordArray.npass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, npass: e.target.value }));
+              setNpasswordValidate(isPassword(e.target.value));
             }}
           />
         </div>
+        <small
+          className="error-message"
+          style={{ visibility: npasswordValidate ? "hidden" : "visible" }}
+        >
+          Use 8+ characters with letters and numbers.
+        </small>
         <label className="label-5">Confirm Password</label>
         <div className="home-input-div">
           <input
@@ -852,9 +887,16 @@ const Home = () => {
             value={passwordArray.copass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, copass: e.target.value }));
+              setCopasswordValidate(isPassword(e.target.value));
             }}
           />
         </div>
+        <small
+          className="error-message"
+          style={{ visibility: copasswordValidate ? "hidden" : "visible" }}
+        >
+          Use 8+ characters with letters and numbers.
+        </small>
         <div
           className="logout-container"
           onClick={async () => {
@@ -874,11 +916,25 @@ const Home = () => {
                   passwordArray.npass === passwordArray.copass
                 ) {
                   const result = await axios.put(
-                    `${api_url}users/update/by-id?id=22`,
+                    `${api_url}users/update/by-id?id=${uid}`,
                     {
                       username: userData.username,
                       email: userData.email,
                       password: passwordArray.copass,
+                    }
+                  );
+
+                  if (result.data) {
+                    alert("update success");
+                  } else {
+                  }
+                } else {
+                  const result = await axios.put(
+                    `${api_url}users/update/by-id?id=${uid}`,
+                    {
+                      username: userData.username,
+                      email: userData.email,
+                      password: null,
                     }
                   );
 
@@ -894,7 +950,7 @@ const Home = () => {
           <Save color={iconColor} />
           <label className="label-5">update</label>
         </div>
-        <Logout/>
+        <Logout />
       </div>
     </div>
   );

@@ -63,6 +63,6 @@ export const messageCard = {
   num2: "20px",
 };
 
-export const hideNum01 = "20%";
+export const hideNum01 = "3%";
 
 export const hideNum02 = "-100%";
