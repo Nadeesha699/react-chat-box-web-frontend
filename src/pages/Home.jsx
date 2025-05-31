@@ -2,6 +2,8 @@ import axios from "axios";
 import {
   CheckCheck,
   Edit,
+  Eye,
+  EyeClosed,
   Pen,
   Save,
   Search,
@@ -38,6 +40,7 @@ import {
   latestMessage,
   latestRead,
   latestTime,
+  latestUserId,
   unreadCount,
 } from "../services/services";
 import {
@@ -48,6 +51,8 @@ import {
 } from "../components/Components";
 import Swal from "sweetalert2";
 import { isEmail, isPassword, isUserName } from "../validation/Validation";
+import { toast } from "react-toastify";
+import { FaCheckCircle } from "react-icons/fa";
 
 // https://dribbble.com/shots/23280048-Web-Chat-UI
 
@@ -62,6 +67,7 @@ const Home = () => {
   const [showChatSpace, setShowChatSpace] = useState(true);
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState({});
+  const [userIds, setUserIds] = useState({});
   const [times, setTimes] = useState({});
   const [reads, setReads] = useState({});
   const [counts, setCounts] = useState({});
@@ -95,6 +101,15 @@ const Home = () => {
   const [npasswordValidate, setNpasswordValidate] = useState(true);
   const [cupasswordValidate, setCupasswordValidate] = useState(true);
   const [copasswordValidate, setCopasswordValidate] = useState(true);
+  const [hideError01, setHideEorr01] = useState(false);
+  const [hideError02, setHideEorr02] = useState(false);
+  const [hideError03, setHideEorr03] = useState(false);
+
+  const [passowordHide01, setPasswordHide01] = useState(false);
+  const [passowordHide02, setPasswordHide02] = useState(false);
+  const [passowordHide03, setPasswordHide03] = useState(false);
+
+  const [conClickedId, setConClickedId] = useState(0);
 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 575.98);
@@ -119,14 +134,26 @@ const Home = () => {
   };
 
   useEffect(() => {
+    scrollToBottom();
+  }, [chatData]);
+
+  useEffect(() => {
     try {
-      document.title = "Chat Box - converstion";
-      const loadData = () => {
+      const loadData = async () => {
+        const user = await axios.get(
+          `${api_url}users/get-user/by-id?id=${uid}`
+        );
+        if (user.data.data) {
+          document.title = `Chat Box - Conversations | ${user.data.data.username}`;
+        }
+
         axios
           .get(`${api_url}conversation/get-all/by-user-id?id=${uid}`)
           .then((e) => {
             if (e.data.data.length !== 0) {
               setConversationData(e.data.data);
+            } else {
+              setConversationData([]);
             }
           });
 
@@ -152,6 +179,17 @@ const Home = () => {
       };
 
       fetchMessages();
+
+      const fetchUserId = async () => {
+        const newUserIds = {};
+        for (let e of conversationData) {
+          const userid = await latestUserId(e.id);
+          newUserIds[e.id] = userid;
+        }
+        setUserIds(newUserIds);
+      };
+
+      fetchUserId();
 
       const fetchTimes = async () => {
         const newTimes = {};
@@ -185,7 +223,6 @@ const Home = () => {
       };
 
       fetchCounts();
-      scrollToBottom();
     } catch (error) {}
   }, [conversationData]);
 
@@ -198,9 +235,6 @@ const Home = () => {
         creatAt: new Date().toISOString(),
       };
 
-      axios.put(
-        `${api_url}message/update/by-conversation-id?id=${senderConId}`
-      );
       setCounts((prev) => ({
         ...prev,
         [newMessage.conversationId]: 0,
@@ -236,10 +270,6 @@ const Home = () => {
 
           const messages = result1.data.data;
 
-          await axios.put(
-            `${api_url}message/update/by-conversation-id?id=${senderConId}`
-          );
-
           setChatData(messages);
 
           setShowChatSpace(false);
@@ -248,6 +278,7 @@ const Home = () => {
         });
     } catch (error) {}
   };
+
   return (
     <div className="home-container">
       {dataLoading ? (
@@ -293,179 +324,228 @@ const Home = () => {
               />
             </div>
             <div className="scroll-container">
-              {conversationData
-                .filter((e) =>
-                  e.senderuser.username
-                    .toLowerCase()
-                    .includes(searchText.toLowerCase())
-                )
-                .map((e, index) => {
-                  return (
-                    <Link
-                      onMouseEnter={() => {
-                        setVisibleTrash(true);
-                        setHoveredConversationId(e.id);
-                      }}
-                      onMouseLeave={() => {
-                        setVisibleTrash(false);
-                        setHoveredConversationId(null);
-                      }}
-                      className="link-message-body"
-                      to={
-                        isMobileDisabled
-                          ? `/chat-body/${uid}/${
-                              e.id
-                            }?senderName=${encodeURIComponent(
-                              e.senderuser.username
-                            )}`
-                          : "#"
-                      }
-                      key={index}
-                      onClick={() => {
-                        document.title = "Chat Box - chat";
-                        axios
-                          .get(
-                            `${api_url}message/get-all/by-conversation-id?id=${e.id}`
-                          )
-                          .then((res) => {
-                            const messages = res.data.data;
-                            if (messages.length > 0) {
-                              axios
-                                .put(
-                                  `${api_url}message/update/by-conversation-id?id=${e.id}`
-                                )
-                                .catch((err) =>
-                                  console.error(
-                                    "PUT error:",
-                                    err.response?.data || err.message
-                                  )
-                                );
-
-                              setCounts((prev) => ({
-                                ...prev,
-                                [e.id]: 0,
-                              }));
-
-                              setReads((prev) => ({
-                                ...prev,
-                                [e.id]: true,
-                              }));
-                              setChatData(messages);
-                              setSenderConId(messages[0].conversationId);
-                              setShowChatSpace(false);
-                              setMsgBodyEmpty(false);
-                            } else {
-                              setSenderConId(e.id);
-                              setShowChatSpace(false);
-                              setMsgBodyEmpty(true);
-                            }
-
-                            setSenderName(e.senderuser.username);
-                          })
-                          .catch((err) =>
-                            console.error(
-                              "GET error:",
-                              err.response?.data || err.message
-                            )
-                          );
-                      }}
-                    >
-                      <div
-                        className="message-card"
-                        key={index}
-                        style={{
-                          backgroundColor: changeDeleteColor
-                            ? e.id === hoveredConversationId
-                              ? deleteColor
-                              : normalColor
-                            : normalColor,
-                        }}
-                      >
-                        <User size={iconSize01} color={iconColor} />
-                        <div className="message-card-1">
-                          <div className="message-card-2">
-                            {e.createrId === parseInt(uid) ? (
-                              <label className="label-1">
-                                {e.senderuser.username}
-                              </label>
-                            ) : (
-                              <label className="label-1">
-                                {e.createruser.username}
-                              </label>
-                            )}
-                            {reads[e.id] ? (
-                              <CheckCheck size={iconSize} color={iconColor} />
-                            ) : (
-                              <CheckCheck size={iconSize} color={iconColor03} />
-                            )}
-
-                            <label className="label-2">
-                              {timeAgo(times[e.id])}
-                            </label>
-                          </div>
-                          <div className="message-card-2">
-                            <label className="label-2">{messages[e.id]}</label>
-                            <label className="message-card-lbl">
-                              {counts[e.id]}
-                            </label>
-                          </div>
-                        </div>
-                        <Trash2Icon
-                          onClick={() => {
-                            Swal.fire({
-                              background: toastColor01,
-                              title: "Chat Box",
-                              text: "Do yo want to delete this conversation ? ",
-                              color: iconColor,
-                              showCancelButton: true,
-                              cancelButtonText: "no",
-                              confirmButtonText: "yes",
-                              cancelButtonColor: toastColor02,
-                              confirmButtonColor: toastColor,
-                            }).then(async (result) => {
-                              if (result.isConfirmed) {
-                                await axios.delete(
-                                  `${api_url}conversation/delete/by-id?id=${e.id}`
-                                );
-                                await axios
-                                  .get(
-                                    `${api_url}conversation/get-all/by-user-id?id=${uid}`
-                                  )
-                                  .then((e) => {
-                                    if (e.data.data.length !== 0) {
-                                      setConversationData(e.data.data);
-                                    }
-                                  });
-
-                                setShowChatSpace(true);
-                              }
-                            });
-                          }}
+              {conversationData.length === 0
+                ? ""
+                : conversationData
+                    .filter((e) =>
+                      e.senderuser.username
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase())
+                    )
+                    .map((e, index) => {
+                      return (
+                        <Link
                           onMouseEnter={() => {
-                            setChangeDeleteColor(true);
+                            setVisibleTrash(true);
+                            setHoveredConversationId(e.id);
                           }}
                           onMouseLeave={() => {
-                            setChangeDeleteColor(false);
+                            setVisibleTrash(false);
+                            setHoveredConversationId(null);
                           }}
-                          color={
-                            changeDeleteColor
-                              ? e.id === hoveredConversationId
-                                ? iconColor
-                                : iconColor02
-                              : iconColor02
-                          }
+                          className="link-message-body"
                           style={{
-                            opacity: visibleTrash
-                              ? hoveredConversationId === e.id
-                                ? 1
-                                : 0
-                              : 0,
+                            backgroundColor:
+                              conClickedId === e.id
+                                ? "#0202024d"
+                                : "transparent",
                           }}
-                        />
-                      </div>
-                    </Link>
-                  );
-                })}
+                          to={
+                            isMobileDisabled
+                              ? `/chat-body/${uid}/${
+                                  e.id
+                                }?senderName=${encodeURIComponent(
+                                  e.senderuser.username
+                                )}`
+                              : "#"
+                          }
+                          key={index}
+                          onClick={() => {
+                            e.senderId === parseInt(uid)
+                              ? (document.title = `Chat with ${e.createruser.username} | Chat Box`)
+                              : (document.title = `Chat with ${e.senderuser.username} | Chat Box`);
+                            setConClickedId(e.id);
+                            axios
+                              .get(
+                                `${api_url}message/get-all/by-conversation-id?id=${e.id}`
+                              )
+                              .then(async (res) => {
+                                const messages = res.data.data;
+                                if (messages.length > 0) {
+                                  if (
+                                    messages[messages.length - 1].userid !==
+                                    Number(uid)
+                                  ) {
+                                    axios
+                                      .put(
+                                        `${api_url}message/update/by-conversation-id?id=${e.id}`
+                                      )
+                                      .catch((err) =>
+                                        console.error(
+                                          "PUT error:",
+                                          err.response?.data || err.message
+                                        )
+                                      );
+                                  }
+
+                                  setCounts((prev) => ({
+                                    ...prev,
+                                    [e.id]: 0,
+                                  }));
+
+                                  setReads((prev) => ({
+                                    ...prev,
+                                    [e.id]: true,
+                                  }));
+                                  setChatData(messages);
+                                  setSenderConId(messages[0].conversationId);
+                                  setShowChatSpace(false);
+                                  setMsgBodyEmpty(false);
+                                } else {
+                                  setSenderConId(e.id);
+                                  setShowChatSpace(false);
+                                  setMsgBodyEmpty(true);
+                                }
+
+                                setSenderName(e.senderuser.username);
+                              })
+                              .catch((err) =>
+                                console.error(
+                                  "GET error:",
+                                  err.response?.data || err.message
+                                )
+                              );
+                          }}
+                        >
+                          <div
+                            className="message-card"
+                            key={index}
+                            style={{
+                              backgroundColor: changeDeleteColor
+                                ? e.id === hoveredConversationId
+                                  ? deleteColor
+                                  : normalColor
+                                : normalColor,
+                            }}
+                          >
+                            <User size={iconSize01} color={iconColor} />
+                            <div className="message-card-1">
+                              <div className="message-card-2">
+                                {e.createrId === parseInt(uid) ? (
+                                  <label className="label-1">
+                                    {e.senderuser.username}
+                                  </label>
+                                ) : (
+                                  <label className="label-1">
+                                    {e.createruser.username}
+                                  </label>
+                                )}
+                                {messages[e.id] === undefined ? (
+                                  ""
+                                ) : reads[e.id] ||
+                                  userIds[e.id] === parseInt(uid) ? (
+                                  <CheckCheck
+                                    size={iconSize}
+                                    color={iconColor}
+                                  />
+                                ) : (
+                                  <CheckCheck
+                                    size={iconSize}
+                                    color={iconColor03}
+                                  />
+                                )}
+
+                                <label className="label-2">
+                                  {messages[e.id] === undefined
+                                    ? ""
+                                    : timeAgo(times[e.id])}
+                                </label>
+                              </div>
+                              <div className="message-card-2">
+                                <label className="label-2">
+                                  {messages[e.id]}
+                                </label>
+                                {messages[e.id] === undefined ? (
+                                  ""
+                                ) : counts[e.id] === 0 ? (
+                                  ""
+                                ) : userIds[e.id] === parseInt(uid) ? (
+                                  ""
+                                ) : (
+                                  <label className="message-card-lbl">
+                                    {counts[e.id]}
+                                  </label>
+                                )}
+                              </div>
+                            </div>
+                            <Trash2Icon
+                              onClick={() => {
+                                Swal.fire({
+                                  background: toastColor01,
+                                  title: "Chat Box",
+                                  text: "Do yo want to delete this conversation ? ",
+                                  color: iconColor,
+                                  showCancelButton: true,
+                                  cancelButtonText: "no",
+                                  confirmButtonText: "yes",
+                                  cancelButtonColor: toastColor02,
+                                  confirmButtonColor: toastColor,
+                                }).then(async (result) => {
+                                  if (result.isConfirmed) {
+                                    await axios.delete(
+                                      `${api_url}conversation/delete/by-id?id=${e.id}`
+                                    );
+                                    await axios
+                                      .get(
+                                        `${api_url}conversation/get-all/by-user-id?id=${uid}`
+                                      )
+                                      .then((e) => {
+                                        if (e.data.data.length !== 0) {
+                                          setConversationData(e.data.data);
+                                        }
+                                      });
+
+                                    setShowChatSpace(true);
+
+                                    axios
+                                      .get(
+                                        `${api_url}conversation/get-all/by-user-id?id=${uid}`
+                                      )
+                                      .then((e) => {
+                                        if (e.data.data.length !== 0) {
+                                          setConversationData(e.data.data);
+                                        } else {
+                                          setConversationData([]);
+                                        }
+                                      });
+                                  }
+                                });
+                              }}
+                              onMouseEnter={() => {
+                                setChangeDeleteColor(true);
+                              }}
+                              onMouseLeave={() => {
+                                setChangeDeleteColor(false);
+                              }}
+                              color={
+                                changeDeleteColor
+                                  ? e.id === hoveredConversationId
+                                    ? iconColor
+                                    : iconColor02
+                                  : iconColor02
+                              }
+                              style={{
+                                opacity: visibleTrash
+                                  ? hoveredConversationId === e.id
+                                    ? 1
+                                    : 0
+                                  : 0,
+                              }}
+                            />
+                          </div>
+                        </Link>
+                      );
+                    })}
             </div>
           </div>
           {showChatSpace ? (
@@ -527,84 +607,101 @@ const Home = () => {
                                 {timeAgo(e.createAt)}
                               </label>
                               <div className="div-1">
-                                <Edit
-                                  size={iconSize}
-                                  style={{
-                                    opacity: visibleMessageTrashAndEdit
-                                      ? hoveredMessageId === e.id
-                                        ? 1
-                                        : 0
-                                      : 0,
-                                  }}
-                                  className="icon-hover"
-                                  onMouseEnter={() => {
-                                    setEditChangeMessageBackground(true);
-                                  }}
-                                  onMouseLeave={() => {
-                                    setEditChangeMessageBackground(false);
-                                  }}
-                                  onClick={() => {
-                                    Swal.fire({
-                                      background: toastColor01,
-                                      title: "Chat Box",
-                                      text: "Do you want to edit this message ?",
-                                      color: iconColor,
-                                      showCancelButton: true,
-                                      cancelButtonText: "cancel",
-                                      confirmButtonText: "edit",
-                                      cancelButtonColor: toastColor02,
-                                      confirmButtonColor: toastColor,
-                                      input: "text",
-                                      inputPlaceholder: e.message,
-                                    }).then(async (result) => {
-                                      if (
-                                        result.isConfirmed &&
-                                        result.value !== null
-                                      ) {
-                                        const result2 = await axios.put(
-                                          `${api_url}message/update/by-id?id=${e.id}`,
-                                          {
-                                            message: result.value,
-                                          }
-                                        );
-                                        if (result2.data.data) {
-                                          const result1 = await axios.get(
-                                            `${api_url}message/get-all/by-conversation-id?id=${e.conversationId}`
+                                {e.userid === Number(uid) ? (
+                                  <Edit
+                                    size={iconSize}
+                                    style={{
+                                      opacity: visibleMessageTrashAndEdit
+                                        ? hoveredMessageId === e.id
+                                          ? 1
+                                          : 0
+                                        : 0,
+                                    }}
+                                    className="icon-hover"
+                                    onMouseEnter={() => {
+                                      setEditChangeMessageBackground(true);
+                                    }}
+                                    onMouseLeave={() => {
+                                      setEditChangeMessageBackground(false);
+                                    }}
+                                    onClick={() => {
+                                      Swal.fire({
+                                        background: toastColor01,
+                                        title: "Chat Box",
+                                        text: "Do you want to edit this message ?",
+                                        color: iconColor,
+                                        showCancelButton: true,
+                                        cancelButtonText: "cancel",
+                                        confirmButtonText: "edit",
+                                        cancelButtonColor: toastColor02,
+                                        confirmButtonColor: toastColor,
+                                        input: "text",
+                                        inputPlaceholder: e.message,
+                                      }).then(async (result) => {
+                                        if (
+                                          result.isConfirmed &&
+                                          result.value !== null
+                                        ) {
+                                          const result2 = await axios.put(
+                                            `${api_url}message/update/by-id?id=${e.id}`,
+                                            {
+                                              message: result.value,
+                                            }
                                           );
+                                          if (result2.data.data) {
+                                            const result1 = await axios.get(
+                                              `${api_url}message/get-all/by-conversation-id?id=${e.conversationId}`
+                                            );
 
-                                          const messages = result1.data.data;
+                                            const messages = result1.data.data;
 
-                                          await axios.put(
-                                            `${api_url}message/update/by-conversation-id?id=${e.conversationId}`
-                                          );
-
-                                          setCounts((prev) => ({
-                                            ...prev,
-                                            [e.conversationId]: 0,
-                                          }));
-
-                                          setReads((prev) => ({
-                                            ...prev,
-                                            [e.conversationId]: true,
-                                          }));
-
-                                          setMessages((prev) => ({
-                                            ...prev,
-                                            [e.conversationId]:
+                                            if (
                                               messages[messages.length - 1]
-                                                .message,
-                                          }));
+                                                .userid !== Number(uid)
+                                            ) {
+                                              axios
+                                                .put(
+                                                  `${api_url}message/update/by-conversation-id?id=${e.id}`
+                                                )
+                                                .catch((err) =>
+                                                  console.error(
+                                                    "PUT error:",
+                                                    err.response?.data ||
+                                                      err.message
+                                                  )
+                                                );
+                                            }
 
-                                          setChatData(messages);
+                                            setCounts((prev) => ({
+                                              ...prev,
+                                              [e.conversationId]: 0,
+                                            }));
 
-                                          setSenderConId(
-                                            messages[0].conversationId
-                                          );
+                                            setReads((prev) => ({
+                                              ...prev,
+                                              [e.conversationId]: true,
+                                            }));
+
+                                            setMessages((prev) => ({
+                                              ...prev,
+                                              [e.conversationId]:
+                                                messages[messages.length - 1]
+                                                  .message,
+                                            }));
+
+                                            setChatData(messages);
+
+                                            setSenderConId(
+                                              messages[0].conversationId
+                                            );
+                                          }
                                         }
-                                      }
-                                    });
-                                  }}
-                                />
+                                      });
+                                    }}
+                                  />
+                                ) : (
+                                  ""
+                                )}
                                 <Trash2Icon
                                   size={iconSize}
                                   style={{
@@ -849,51 +946,116 @@ const Home = () => {
         <label className="label-5">Current Password</label>
         <div className="home-input-div">
           <input
+            type={passowordHide01 ? "text" : "password"}
             className="input-2"
             value={passwordArray.cupass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, cupass: e.target.value }));
               setCupasswordValidate(isPassword(e.target.value));
+              if (e.target.value.length === 0) {
+                setHideEorr01(true);
+              }
             }}
           />
+          {passowordHide01 ? (
+            <Eye
+              color={iconColor}
+              onClick={() => {
+                setPasswordHide01(!passowordHide01);
+              }}
+            />
+          ) : (
+            <EyeClosed
+              color={iconColor}
+              onClick={() => {
+                setPasswordHide01(!passowordHide01);
+              }}
+            />
+          )}
         </div>
         <small
           className="error-message"
-          style={{ visibility: cupasswordValidate ? "hidden" : "visible" }}
+          style={{
+            visibility:
+              cupasswordValidate || hideError01 ? "hidden" : "visible",
+          }}
         >
           Use 8+ characters with letters and numbers.
         </small>
         <label className="label-5">New Password</label>
         <div className="home-input-div">
           <input
+            type={passowordHide02 ? "text" : "password"}
             className="input-2"
             value={passwordArray.npass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, npass: e.target.value }));
               setNpasswordValidate(isPassword(e.target.value));
+              if (e.target.value.length === 0) {
+                setHideEorr02(true);
+              }
             }}
           />
+          {passowordHide02 ? (
+            <Eye
+              color={iconColor}
+              onClick={() => {
+                setPasswordHide02(!passowordHide02);
+              }}
+            />
+          ) : (
+            <EyeClosed
+              color={iconColor}
+              onClick={() => {
+                setPasswordHide02(!passowordHide02);
+              }}
+            />
+          )}
         </div>
         <small
           className="error-message"
-          style={{ visibility: npasswordValidate ? "hidden" : "visible" }}
+          style={{
+            visibility: npasswordValidate || hideError02 ? "hidden" : "visible",
+          }}
         >
           Use 8+ characters with letters and numbers.
         </small>
         <label className="label-5">Confirm Password</label>
         <div className="home-input-div">
           <input
+            type={!passowordHide03 ? "text" : "password"}
             className="input-2"
             value={passwordArray.copass}
             onChange={(e) => {
               setPasswordArray((prev) => ({ ...prev, copass: e.target.value }));
               setCopasswordValidate(isPassword(e.target.value));
+              if (e.target.value.length === 0) {
+                setHideEorr03(true);
+              }
             }}
           />
+          {passowordHide03 ? (
+            <Eye
+              color={iconColor}
+              onClick={() => {
+                setPasswordHide03(!passowordHide03);
+              }}
+            />
+          ) : (
+            <EyeClosed
+              color={iconColor}
+              onClick={() => {
+                setPasswordHide03(!passowordHide03);
+              }}
+            />
+          )}
         </div>
         <small
           className="error-message"
-          style={{ visibility: copasswordValidate ? "hidden" : "visible" }}
+          style={{
+            visibility:
+              copasswordValidate || hideError03 ? "hidden" : "visible",
+          }}
         >
           Use 8+ characters with letters and numbers.
         </small>
@@ -901,17 +1063,20 @@ const Home = () => {
           className="logout-container"
           onClick={async () => {
             try {
-              if (userData.email !== null && userData.username !== null) {
+              let toastId = toast.loading("Updating your profile...", {
+                style: { color: toastColor },
+              });
+              if (userNameValidate && emailValidate) {
                 const valid = await axios.post(
-                  `${api_url}users/password-verify/by-id?id=22`,
+                  `${api_url}users/password-verify/by-id?id=${uid}`,
                   {
                     password: passwordArray.cupass,
                   }
                 );
                 if (
-                  passwordArray.npass !== null &&
-                  passwordArray.copass !== null &&
-                  passwordArray.cupass !== null &&
+                  cupasswordValidate &&
+                  npasswordValidate &&
+                  copasswordValidate &&
                   valid.data.success &&
                   passwordArray.npass === passwordArray.copass
                 ) {
@@ -925,8 +1090,20 @@ const Home = () => {
                   );
 
                   if (result.data) {
-                    alert("update success");
+                    toast.update(toastId, {
+                      render: "Profile and password updated successfully!",
+                      type: "success",
+                      isLoading: false,
+                      autoClose: 3000,
+                      icon: <FaCheckCircle color={toastColor} />,
+                    });
                   } else {
+                    toast.update(toastId, {
+                      render: "Failed to update profile and password.",
+                      type: "error",
+                      isLoading: false,
+                      autoClose: 3000,
+                    });
                   }
                 } else {
                   const result = await axios.put(
@@ -939,12 +1116,35 @@ const Home = () => {
                   );
 
                   if (result.data) {
-                    alert("update success");
+                    toast.update(toastId, {
+                      render:
+                        "Profile updated successfully (password unchanged).",
+                      type: "success",
+                      isLoading: false,
+                      autoClose: 3000,
+                      icon: <FaCheckCircle color={toastColor} />,
+                    });
                   } else {
+                    toast.update(toastId, {
+                      render: "Failed to update profile.",
+                      type: "error",
+                      isLoading: false,
+                      autoClose: 3000,
+                    });
                   }
                 }
+              } else {
+                toast.update(toastId, {
+                  render:
+                    "Invalid username or email. Please check your inputs.",
+                  type: "warning",
+                  isLoading: false,
+                  autoClose: 3000,
+                });
               }
-            } catch (error) {}
+            } catch (error) {
+              toast.error("Something went wrong. Please try again later.");
+            }
           }}
         >
           <Save color={iconColor} />

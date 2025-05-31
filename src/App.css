@@ -119,7 +119,12 @@
 
 .icon-hover {
   cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  border-radius: 50%;
 }
+
+.icon-hover:hover{
+  background-color: rgba(255, 255, 255, 0.225);}
 
 .message-text-card {
   width: 20%;
@@ -222,7 +227,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 2%;
-  overflow: scroll;
+  overflow-y: auto;
   height: 73%;
 }
 
@@ -360,6 +365,7 @@
   height: 100%;
   background-color: #00000081;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 .intro-div-4 {
@@ -371,6 +377,11 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.intro-div-4:hover{
+  background-color: #3b93ff;
 }
 
 .intro-button {
@@ -382,6 +393,12 @@
   color: white;
   font-weight: bold;
   cursor: pointer;
+  transition: all 0.5s ease-in-out ;
+}
+
+.intro-button:hover{
+  background-color: white;
+  color: black;
 }
 
 .intro-logo {
@@ -401,6 +418,7 @@
 .link-message-body {
   text-decoration: none;
   color: black;
+  border-radius: 10px;
 }
 
 .home-message-body-mobile {
@@ -414,7 +432,7 @@
 
 .profile-update-div {
   position: fixed;
-  left: 20%;
+  left: 25%;
   background-color: rgba(0, 0, 0, 0.553);
   width: auto;
   height: auto;

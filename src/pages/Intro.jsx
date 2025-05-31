@@ -11,7 +11,6 @@ import {
 import Logo from "../images/message.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isEmail, isPassword, isUserName } from "../validation/Validation";
 import { login, register } from "../services/services";
@@ -307,7 +306,6 @@ const Intro = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

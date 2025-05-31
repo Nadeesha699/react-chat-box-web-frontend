@@ -20,6 +20,16 @@ export const latestMessage = async (a) => {
   } catch (error) {}
 };
 
+export const latestUserId = async (a) => {
+  try {
+    const response = await axios.get(
+      `${api_url}message/get-all/by-conversation-id?id=${a}`
+    );
+    const data = response.data.data;
+    return data ? data[data.length - 1]?.userid : "22";
+  } catch (error) {}
+};
+
 export const latestTime = async (a) => {
   try {
     const response = await axios.get(

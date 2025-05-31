@@ -58,7 +58,7 @@ export const messageCard = {
   senderPostion: "flex-end",
   recieverPostion: "flex-start",
   senderColor: "#55a1ff",
-  recieverColor: "#55d1ff",
+  recieverColor: "#8ad0ff",
   num1: 0,
   num2: "20px",
 };
