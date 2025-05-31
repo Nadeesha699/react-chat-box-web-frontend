@@ -74,7 +74,7 @@ const ChatBody = () => {
         );
     };
     loadData();
-  }, [chatid]);
+  }, [chatid,name]);
 
   const sendMessage = () => {
     try {
