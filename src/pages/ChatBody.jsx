@@ -11,8 +11,6 @@ import { messageCard } from "../utils/utils";
 import { useRef } from "react";
 import Swal from "sweetalert2";
 import {
-  deleteColor,
-  updateColor,
   iconSize,
   toastColor,
   toastColor01,
@@ -29,10 +27,10 @@ const ChatBody = () => {
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [visibleMessageTrashAndEdit, setVisibleMessageTrashAndEdit] =
     useState(false);
-  const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
-    useState(false);
-  const [editChangeMessageBackground, setEditChangeMessageBackground] =
-    useState(false);
+  // const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
+  //   useState(false);
+  // const [editChangeMessageBackground, setEditChangeMessageBackground] =
+  //   useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -149,13 +147,13 @@ const ChatBody = () => {
                       className="message-text-card"
                       style={{
                         backgroundColor:
-                          deleteChangeMessageBackground &&
-                          hoveredMessageId === e.id
-                            ? deleteColor
-                            : editChangeMessageBackground &&
-                              hoveredMessageId === e.id
-                            ? updateColor
-                            : e.userid === parseInt(uid)
+                          // deleteChangeMessageBackground &&
+                          // hoveredMessageId === e.id
+                          //   ? deleteColor
+                          //   : editChangeMessageBackground &&
+                          //     hoveredMessageId === e.id
+                          //   ? updateColor:
+                            e.userid === parseInt(uid)
                             ? messageCard.senderColor
                             : messageCard.recieverColor,
                         borderTopRightRadius:
@@ -182,12 +180,12 @@ const ChatBody = () => {
                                 : 0,
                             }}
                             className="icon-hover"
-                            onMouseEnter={() => {
-                              setEditChangeMessageBackground(true);
-                            }}
-                            onMouseLeave={() => {
-                              setEditChangeMessageBackground(false);
-                            }}
+                            // onMouseEnter={() => {
+                            //   setEditChangeMessageBackground(true);
+                            // }}
+                            // onMouseLeave={() => {
+                            //   setEditChangeMessageBackground(false);
+                            // }}
                             onClick={() => {
                               Swal.fire({
                                 background: toastColor01,
@@ -244,12 +242,12 @@ const ChatBody = () => {
                               : 0,
                           }}
                           className="icon-hover"
-                          onMouseEnter={() => {
-                            setDeleteChangeMessageBackground(true);
-                          }}
-                          onMouseLeave={() => {
-                            setDeleteChangeMessageBackground(false);
-                          }}
+                          // onMouseEnter={() => {
+                          //   setDeleteChangeMessageBackground(true);
+                          // }}
+                          // onMouseLeave={() => {
+                          //   setDeleteChangeMessageBackground(false);
+                          // }}
                           onClick={async () => {
                             await axios.delete(
                               `${api_url}message/delete/by-id?id=${e.id}`

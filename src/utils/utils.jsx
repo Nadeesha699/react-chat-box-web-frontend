@@ -52,10 +52,6 @@ export const iconColor03 = "#a2a2a2";
 
 export const iconColor04 = "black";
 
-export const updateColor = "#00ff00ab";
-
-export const deleteColor = "#ff000057";
-
 export const normalColor = "transparent";
 
 export const messageCard = {

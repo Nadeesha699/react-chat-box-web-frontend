@@ -19,7 +19,6 @@ import chatJsonData from "../json/chatJsonData.json";
 import userJsonData from "../json/userJsonData.json";
 import userSinlgeJsonData from "../json/userSingleJsonData.json";
 import {
-  deleteColor,
   hideNum01,
   hideNum02,
   iconColor,
@@ -36,7 +35,6 @@ import {
   toastColor01,
   toastColor02,
   toastColor03,
-  updateColor,
 } from "../utils/utils";
 import {
   latestMessage,
@@ -84,10 +82,10 @@ const Home = () => {
   const [visibleMessageTrashAndEdit, setVisibleMessageTrashAndEdit] =
     useState(false);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
-  const [editChangeMessageBackground, setEditChangeMessageBackground] =
-    useState(false);
-  const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
-    useState(false);
+  // const [editChangeMessageBackground, setEditChangeMessageBackground] =
+  //   useState(false);
+  // const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
+  //   useState(false);
   const [userData, setUserData] = useState(userSinlgeJsonData);
   const [passwordArray, setPasswordArray] = useState({
     cupass: "",
@@ -421,11 +419,7 @@ const Home = () => {
                             className="message-card"
                             key={index}
                             style={{
-                              backgroundColor: changeDeleteColor
-                                ? e.id === hoveredConversationId
-                                  ? deleteColor
-                                  : normalColor
-                                : normalColor,
+                              backgroundColor:normalColor
                             }}
                           >
                             <User size={iconSize01} color={iconColor} />
@@ -530,9 +524,9 @@ const Home = () => {
                               color={
                                 changeDeleteColor
                                   ? e.id === hoveredConversationId
-                                    ? iconColor
-                                    : iconColor02
-                                  : iconColor02
+                                    ? iconColor02
+                                    : iconColor
+                                  : iconColor
                               }
                               style={{
                                 opacity: visibleTrash
@@ -583,13 +577,13 @@ const Home = () => {
                               className="message-text-card"
                               style={{
                                 backgroundColor:
-                                  deleteChangeMessageBackground &&
-                                  hoveredMessageId === e.id
-                                    ? deleteColor
-                                    : editChangeMessageBackground &&
-                                      hoveredMessageId === e.id
-                                    ? updateColor
-                                    : e.userid === parseInt(uid)
+                                  // deleteChangeMessageBackground &&
+                                  // hoveredMessageId === e.id
+                                  //   ? deleteColor
+                                  //   : editChangeMessageBackground &&
+                                  //     hoveredMessageId === e.id
+                                  //   ? updateColor :
+                                    e.userid === parseInt(uid)
                                     ? messageCard.senderColor
                                     : messageCard.recieverColor,
                                 borderTopRightRadius:
@@ -618,12 +612,12 @@ const Home = () => {
                                         : 0,
                                     }}
                                     className="icon-hover"
-                                    onMouseEnter={() => {
-                                      setEditChangeMessageBackground(true);
-                                    }}
-                                    onMouseLeave={() => {
-                                      setEditChangeMessageBackground(false);
-                                    }}
+                                    // onMouseEnter={() => {
+                                    //   setEditChangeMessageBackground(true);
+                                    // }}
+                                    // onMouseLeave={() => {
+                                    //   setEditChangeMessageBackground(false);
+                                    // }}
                                     onClick={() => {
                                       Swal.fire({
                                         background: toastColor01,
@@ -712,12 +706,12 @@ const Home = () => {
                                       : 0,
                                   }}
                                   className="icon-hover"
-                                  onMouseEnter={() => {
-                                    setDeleteChangeMessageBackground(true);
-                                  }}
-                                  onMouseLeave={() => {
-                                    setDeleteChangeMessageBackground(false);
-                                  }}
+                                  // onMouseEnter={() => {
+                                  //   setDeleteChangeMessageBackground(true);
+                                  // }}
+                                  // onMouseLeave={() => {
+                                  //   setDeleteChangeMessageBackground(false);
+                                  // }}
                                   onClick={async () => {
                                     await axios.delete(
                                       `${api_url}message/delete/by-id?id=${e.id}`
