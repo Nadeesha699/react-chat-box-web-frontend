@@ -34,19 +34,23 @@ export const iconSize02 = 60;
 
 export const iconSize03 = 100;
 
-export const toastColor = "#0073ff";
+export const toastColor = "rgba(0, 0, 0, 1)";
 
 export const toastColor01 = "#00000089";
 
 export const toastColor02 = "#ff004c";
 
+export const toastColor03 = "gray";
+
 export const iconColor = "white";
 
-export const iconColor01 = "#c2daf7";
+export const iconColor01 = "#ffffffff";
 
 export const iconColor02 = "black";
 
 export const iconColor03 = "#a2a2a2";
+
+export const iconColor04 = "black";
 
 export const updateColor = "#00ff00ab";
 

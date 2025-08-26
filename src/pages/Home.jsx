@@ -25,6 +25,7 @@ import {
   iconColor,
   iconColor02,
   iconColor03,
+  iconColor04,
   iconSize,
   iconSize01,
   iconSize02,
@@ -34,6 +35,7 @@ import {
   toastColor,
   toastColor01,
   toastColor02,
+  toastColor03,
   updateColor,
 } from "../utils/utils";
 import {
@@ -289,7 +291,6 @@ const Home = () => {
             <div className="home-input-div">
               <UserCircleIcon
                 size={iconSize01}
-                color={iconColor}
                 className="icon-hover"
                 onClick={async () => {
                   const result = await axios.get(
@@ -305,7 +306,7 @@ const Home = () => {
             </div>
             <div className="home-container-1">
               <div className="home-message-list-2">
-                <Search color={iconColor} />
+                <Search color={iconColor04} />
                 <input
                   placeholder="search"
                   className="input-1"
@@ -314,7 +315,6 @@ const Home = () => {
                 />
               </div>
               <Edit
-                color={iconColor}
                 onClick={() => {
                   visibleUserList
                     ? setVisibleUserList(false)
@@ -489,7 +489,7 @@ const Home = () => {
                                   cancelButtonText: "no",
                                   confirmButtonText: "yes",
                                   cancelButtonColor: toastColor02,
-                                  confirmButtonColor: toastColor,
+                                  confirmButtonColor: toastColor03,
                                 }).then(async (result) => {
                                   if (result.isConfirmed) {
                                     await axios.delete(
@@ -634,7 +634,7 @@ const Home = () => {
                                         cancelButtonText: "cancel",
                                         confirmButtonText: "edit",
                                         cancelButtonColor: toastColor02,
-                                        confirmButtonColor: toastColor,
+                                        confirmButtonColor: toastColor03,
                                         input: "text",
                                         inputPlaceholder: e.message,
                                       }).then(async (result) => {
@@ -786,7 +786,7 @@ const Home = () => {
                     }
                   }}
                 />
-                <Send onClick={sendMessage} color={iconColor} />
+                <Send onClick={sendMessage} color={iconColor04} />
               </div>
             </div>
           )}
@@ -798,7 +798,7 @@ const Home = () => {
           >
             <label className="label-7">New Chat</label>
             <div className="home-message-list-1-1">
-              <Search color={iconColor} />
+              <Search color={iconColor04} />
               <input
                 placeholder="search"
                 className="input-1"
@@ -906,7 +906,6 @@ const Home = () => {
           />
           <Pen
             className="icon-hover"
-            color={iconColor}
             onClick={() => {
               setPen1(!pen1);
             }}
@@ -931,7 +930,6 @@ const Home = () => {
           />
           <Pen
             className="icon-hover"
-            color={iconColor}
             onClick={() => {
               setPen2(!pen2);
             }}
@@ -959,14 +957,14 @@ const Home = () => {
           />
           {passowordHide01 ? (
             <Eye
-              color={iconColor}
+              className="icon-hover"
               onClick={() => {
                 setPasswordHide01(!passowordHide01);
               }}
             />
           ) : (
             <EyeClosed
-              color={iconColor}
+              className="icon-hover"
               onClick={() => {
                 setPasswordHide01(!passowordHide01);
               }}
@@ -998,14 +996,14 @@ const Home = () => {
           />
           {passowordHide02 ? (
             <Eye
-              color={iconColor}
+              className="icon-hover"
               onClick={() => {
                 setPasswordHide02(!passowordHide02);
               }}
             />
           ) : (
             <EyeClosed
-              color={iconColor}
+              className="icon-hover"
               onClick={() => {
                 setPasswordHide02(!passowordHide02);
               }}
@@ -1036,14 +1034,14 @@ const Home = () => {
           />
           {passowordHide03 ? (
             <Eye
-              color={iconColor}
+              className="icon-hover"
               onClick={() => {
                 setPasswordHide03(!passowordHide03);
               }}
             />
           ) : (
             <EyeClosed
-              color={iconColor}
+              className="icon-hover"
               onClick={() => {
                 setPasswordHide03(!passowordHide03);
               }}

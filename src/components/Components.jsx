@@ -3,7 +3,7 @@ import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { iconSize01, iconSize03, toastColor,iconColor, iconColor01,toastColor01,toastColor02 } from "../utils/utils";
+import { iconSize01, iconSize03, toastColor,toastColor03,iconColor, iconColor01,toastColor01,toastColor02 } from "../utils/utils";
 
 export const EmptyMessageBody = () => {
   return (
@@ -43,7 +43,7 @@ export const Logout = () => {
           cancelButtonText: "no",
           confirmButtonText: "yes",
           cancelButtonColor: toastColor02,
-          confirmButtonColor:toastColor,
+          confirmButtonColor:toastColor03,
         }).then((result) => {
           result.isConfirmed ? navigate("/") : navigate("#");
         });

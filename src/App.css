@@ -3,7 +3,7 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
-  background: linear-gradient(to right, #29a6ff, #84ccff, #0262a8, #dff2ff);
+  background-color: #393939;
 }
 
 .home-container-1 {
@@ -26,7 +26,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #c2daf7;
+  background-color: #ffffff;
   padding: 10px;
   border-radius: 10px;
 }
@@ -34,8 +34,7 @@
 .home-container-3 {
   position: fixed;
   left: 20%;
-  background-color: rgba(0, 0, 0, 0.553);
-  box-shadow: 20px 20px 20px black;
+  background-color: rgb(33, 33, 33);
   border-radius: 5px;
   padding: 2%;
   display: flex;
@@ -120,11 +119,13 @@
 .icon-hover {
   cursor: pointer;
   transition: all 0.5s ease-in-out;
-  border-radius: 50%;
+  color: white;
 }
 
 .icon-hover:hover{
-  background-color: rgba(255, 255, 255, 0.225);}
+  color: rgb(0, 0, 0);
+}
+
 
 .message-text-card {
   width: 20%;
@@ -150,7 +151,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #c2daf7;
+  background-color: #ffffff;
   padding: 2%;
   border-radius: 10px;
   width: 50%;
@@ -162,7 +163,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #c2daf7;
+  background-color: #ffffff;
   padding: 2%;
   border-radius: 10px;
   width: 100%;
@@ -189,7 +190,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: #c2daf7;
+  background-color: #ffffff;
   padding: 2%;
   border-radius: 10px;
   width: 80%;
@@ -427,13 +428,13 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  background: linear-gradient(to right, #29a6ff, #84ccff, #dff2ff, #0262a8);
+  background-color: #393939;
 }
 
 .profile-update-div {
   position: fixed;
-  left: 25%;
-  background-color: rgba(0, 0, 0, 0.553);
+  left: 20%;
+  background-color: rgb(33, 33, 33);
   width: auto;
   height: auto;
   display: flex;
@@ -442,7 +443,6 @@
   padding: 2%;
   gap: 10px;
   border-radius: 5px;
-  box-shadow: 20px 20px 20px black;
   transition: all 1s ease-in-out;
 }
 
