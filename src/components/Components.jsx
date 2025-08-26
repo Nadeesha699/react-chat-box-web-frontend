@@ -3,7 +3,7 @@ import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { iconSize01, iconSize03, toastColor,toastColor03,iconColor, iconColor01,toastColor01,toastColor02 } from "../utils/utils";
+import { iconSize01, iconSize03,toastColor03,iconColor, iconColor01,toastColor01,toastColor02 } from "../utils/utils";
 
 export const EmptyMessageBody = () => {
   return (
@@ -23,7 +23,7 @@ export const EmptyMessageBody = () => {
 export const LoadingScreen = () => {
   return (
     <div className="loading-screen">
-      <ClipLoader color={toastColor} size={iconSize01} />
+      <ClipLoader color={toastColor01} size={iconSize01} />
     </div>
   );
 };

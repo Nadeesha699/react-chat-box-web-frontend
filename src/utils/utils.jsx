@@ -57,8 +57,8 @@ export const normalColor = "transparent";
 export const messageCard = {
   senderPostion: "flex-end",
   recieverPostion: "flex-start",
-  senderColor: "#55a1ff",
-  recieverColor: "#8ad0ff",
+  senderColor: "#ffffffff",
+  recieverColor: "#717171ff",
   num1: 0,
   num2: "20px",
 };

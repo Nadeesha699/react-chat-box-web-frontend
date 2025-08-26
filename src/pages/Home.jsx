@@ -82,10 +82,6 @@ const Home = () => {
   const [visibleMessageTrashAndEdit, setVisibleMessageTrashAndEdit] =
     useState(false);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
-  // const [editChangeMessageBackground, setEditChangeMessageBackground] =
-  //   useState(false);
-  // const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
-  //   useState(false);
   const [userData, setUserData] = useState(userSinlgeJsonData);
   const [passwordArray, setPasswordArray] = useState({
     cupass: "",
@@ -449,14 +445,14 @@ const Home = () => {
                                   />
                                 )}
 
-                                <label className="label-2">
+                                <label className="label-8">
                                   {messages[e.id] === undefined
                                     ? ""
                                     : timeAgo(times[e.id])}
                                 </label>
                               </div>
                               <div className="message-card-2">
-                                <label className="label-2">
+                                <label className="label-8">
                                   {messages[e.id]}
                                 </label>
                                 {messages[e.id] === undefined ? (
@@ -577,12 +573,6 @@ const Home = () => {
                               className="message-text-card"
                               style={{
                                 backgroundColor:
-                                  // deleteChangeMessageBackground &&
-                                  // hoveredMessageId === e.id
-                                  //   ? deleteColor
-                                  //   : editChangeMessageBackground &&
-                                  //     hoveredMessageId === e.id
-                                  //   ? updateColor :
                                     e.userid === parseInt(uid)
                                     ? messageCard.senderColor
                                     : messageCard.recieverColor,
@@ -612,12 +602,6 @@ const Home = () => {
                                         : 0,
                                     }}
                                     className="icon-hover"
-                                    // onMouseEnter={() => {
-                                    //   setEditChangeMessageBackground(true);
-                                    // }}
-                                    // onMouseLeave={() => {
-                                    //   setEditChangeMessageBackground(false);
-                                    // }}
                                     onClick={() => {
                                       Swal.fire({
                                         background: toastColor01,
@@ -706,12 +690,6 @@ const Home = () => {
                                       : 0,
                                   }}
                                   className="icon-hover"
-                                  // onMouseEnter={() => {
-                                  //   setDeleteChangeMessageBackground(true);
-                                  // }}
-                                  // onMouseLeave={() => {
-                                  //   setDeleteChangeMessageBackground(false);
-                                  // }}
                                   onClick={async () => {
                                     await axios.delete(
                                       `${api_url}message/delete/by-id?id=${e.id}`

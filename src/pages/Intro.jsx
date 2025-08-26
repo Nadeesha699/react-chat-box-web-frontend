@@ -49,7 +49,6 @@ const Intro = () => {
   }, []);
 
   return (
-    <div className="intro-container">
       <div className="intro-card">
         <div
           className="intro-div-2"
@@ -84,7 +83,7 @@ const Intro = () => {
           style={{ display: visibleRegScreen2 ? "flex" : "none" }}
         >
           <img src={Logo} alt="img" className="intro-logo" />
-          <div className="intro-div-1-1">
+          <div className="intro-div-1-3">
             <div className="home-message-list-1">
               <Mail size={iconSize} />
               <input
@@ -124,7 +123,7 @@ const Intro = () => {
                   }
                 }}
               />
-              <HelpCircle size={iconSize} />
+              <HelpCircle size={iconSize}/>
             </div>
             <small
               className="error-message"
@@ -306,7 +305,6 @@ const Intro = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

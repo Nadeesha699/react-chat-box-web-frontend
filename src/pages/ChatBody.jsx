@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, Edit, Send, Trash2Icon } from "lucide-react";
 import { Link, useSearchParams, useParams } from "react-router-dom";
-import { timeAgo } from "../utils/utils";
+import { iconColor04, timeAgo } from "../utils/utils";
 import { useEffect } from "react";
 import chatJsonData from "../json/chatJsonData.json";
 import axios from "axios";
@@ -27,10 +27,6 @@ const ChatBody = () => {
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [visibleMessageTrashAndEdit, setVisibleMessageTrashAndEdit] =
     useState(false);
-  // const [deleteChangeMessageBackground, setDeleteChangeMessageBackground] =
-  //   useState(false);
-  // const [editChangeMessageBackground, setEditChangeMessageBackground] =
-  //   useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -147,12 +143,6 @@ const ChatBody = () => {
                       className="message-text-card"
                       style={{
                         backgroundColor:
-                          // deleteChangeMessageBackground &&
-                          // hoveredMessageId === e.id
-                          //   ? deleteColor
-                          //   : editChangeMessageBackground &&
-                          //     hoveredMessageId === e.id
-                          //   ? updateColor:
                             e.userid === parseInt(uid)
                             ? messageCard.senderColor
                             : messageCard.recieverColor,
@@ -180,12 +170,6 @@ const ChatBody = () => {
                                 : 0,
                             }}
                             className="icon-hover"
-                            // onMouseEnter={() => {
-                            //   setEditChangeMessageBackground(true);
-                            // }}
-                            // onMouseLeave={() => {
-                            //   setEditChangeMessageBackground(false);
-                            // }}
                             onClick={() => {
                               Swal.fire({
                                 background: toastColor01,
@@ -242,12 +226,6 @@ const ChatBody = () => {
                               : 0,
                           }}
                           className="icon-hover"
-                          // onMouseEnter={() => {
-                          //   setDeleteChangeMessageBackground(true);
-                          // }}
-                          // onMouseLeave={() => {
-                          //   setDeleteChangeMessageBackground(false);
-                          // }}
                           onClick={async () => {
                             await axios.delete(
                               `${api_url}message/delete/by-id?id=${e.id}`
@@ -298,7 +276,7 @@ const ChatBody = () => {
             }
           }}
         />
-        <Send onClick={sendMessage} color={iconColor} />
+        <Send onClick={sendMessage} color={iconColor04} />
       </div>
     </div>
   );
